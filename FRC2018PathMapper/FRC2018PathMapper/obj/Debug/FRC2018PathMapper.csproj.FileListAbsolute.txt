@@ -1,0 +1,11 @@
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\obj\Debug\FRC2018PathMapper.FRC2018PathMapper.resources
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\obj\Debug\FRC2018PathMapper.Properties.Resources.resources
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\obj\Debug\FRC2018PathMapper.csproj.GenerateResource.Cache
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\obj\Debug\FRC2018PathMapper.csproj.CoreCompileInputs.cache
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\bin\Debug\FRC2018PathMapper.exe.config
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\bin\Debug\FRC2018PathMapper.exe
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\bin\Debug\FRC2018PathMapper.pdb
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\bin\Debug\JimsMath.dll
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\bin\Debug\JimsMath.pdb
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\obj\Debug\FRC2018PathMapper.exe
+C:\JimsCode\CS\FRC2018PathMapper\FRC2018PathMapper\obj\Debug\FRC2018PathMapper.pdb
