@@ -11,6 +11,8 @@
 
 package org.usfirst.frc4089.VisionBot.commands;
 import edu.wpi.first.wpilibj.command.Command;
+
+import org.usfirst.frc4089.VisionBot.Robot;
 import org.usfirst.frc4089.VisionBot.RobotMap;
 import org.usfirst.frc4089.VisionBot.StopWatch;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -63,7 +65,7 @@ public class MoveDistance extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-    	RobotMap.driveBaseRobotDrive41.curvatureDrive(-0.3,0,true);
+    	Robot.driveBase.Drive(-0.3, 0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -75,7 +77,7 @@ public class MoveDistance extends Command {
     	System.out.println(curLocation);
     	if((curLocation > mCurTarget) || (true == mForward.isExpired()))
 		{
-    		RobotMap.driveBaseRobotDrive41.tankDrive(0, 0);
+        	Robot.driveBase.Drive(0, 0);
 			return true;
 		}
 

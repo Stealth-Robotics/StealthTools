@@ -11,6 +11,8 @@
 
 package org.usfirst.frc4089.VisionBot.commands;
 import edu.wpi.first.wpilibj.command.Command;
+
+import org.usfirst.frc4089.VisionBot.Robot;
 import org.usfirst.frc4089.VisionBot.RobotMap;
 import org.usfirst.frc4089.VisionBot.StopWatch;
 
@@ -46,7 +48,7 @@ public class DriveForwardOneSecond extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-    	RobotMap.driveBaseRobotDrive41.arcadeDrive(-0.6,0);
+    	Robot.driveBase.Drive(-0.6, 0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -54,7 +56,7 @@ public class DriveForwardOneSecond extends Command {
     protected boolean isFinished() {
     	if(true == mForward.isExpired())
 		{
-    		RobotMap.driveBaseRobotDrive41.curvatureDrive(0,0,true);			
+        	Robot.driveBase.Drive(0, 0);
 		}
 
         return mForward.isExpired();

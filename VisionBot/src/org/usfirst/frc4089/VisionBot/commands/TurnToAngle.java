@@ -15,6 +15,7 @@ import org.usfirst.frc4089.VisionBot.RobotMap;
 import org.usfirst.frc4089.VisionBot.StopWatch;
 import org.usfirst.frc4089.VisionBot.MPU9250IMU;
 import org.usfirst.frc4089.VisionBot.Robot;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 /**
  *
@@ -30,6 +31,7 @@ public class TurnToAngle extends Command {
 	double mNeedAngle = 0.0;
 	StopWatch mForward = new StopWatch(60000);
 	MPU9250IMU mImu;
+	int mCount = 0;
 	
     public TurnToAngle() {
 
@@ -65,17 +67,40 @@ public class TurnToAngle extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
+		PigeonIMU.GeneralStatus genStatus = new PigeonIMU.GeneralStatus();
+		PigeonIMU.FusionStatus fusionStatus = new PigeonIMU.FusionStatus();
+		double [] xyz_dps = new double [3];
+		/* grab some input data from Pigeon and gamepad*/
+		RobotMap.pigeonIMU.getGeneralStatus(genStatus);
+    	
+    	
+    	double[] raw = new double[3];
+    	double[] acum = new double[3];
     	mImu.calcMagData();
     	mImu.updateTime();
+    	double heading1 = RobotMap.pigeonIMU.getFusedHeading();
+    	double heading2 = RobotMap.pigeonIMU.getAbsoluteCompassHeading();
+    	double heading3 = RobotMap.pigeonIMU.getCompassHeading();
+    	RobotMap.pigeonIMU.getRawGyro(raw);
+    	RobotMap.pigeonIMU.getAccumGyro(acum);
+    	    	
+    	raw[2] *= 3.1415/180.0;;
     	
-    	System.out.print(mImu.mx);
-    	System.out.print(" ");
-    	System.out.print(mImu.my);
-    	System.out.print(" ");
-    	System.out.println(mImu.mz);
+    	double rate = RobotMap.gyro.getRate();
+    	RobotMap.netTable.putNumber("gyroRate", rate);	
+    	RobotMap.netTable.putNumber("imuRateRaw", raw[2]);	
+    	RobotMap.netTable.putNumber("imuRateAcum", acum[2]);	
+    	
+    	mCount++;
+    	if(mCount>20)
+    	{
+    		System.out.format("%5.2f %5.2f %5.2f\n",
+    			heading1,heading2,heading3);
+    		mCount = 0;
+    	}
     	
     	mNeedAngle = mTurnAngle - mImu.my;
-   		Robot.driveBase.Drive(0, -.3);
+   		//Robot.driveBase.Drive(0, -.3);
     }
 
     // Make this return true when this Command no longer needs to run execute()
