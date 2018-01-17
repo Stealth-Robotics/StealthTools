@@ -46,7 +46,7 @@ public class DriveForwardOneSecond extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-    	RobotMap.driveBaseRobotDrive41.curvatureDrive(-0.6,0,true);
+    	RobotMap.driveBaseRobotDrive41.arcadeDrive(-0.6,0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
