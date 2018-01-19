@@ -9,15 +9,16 @@
 // it from being updated in the future.
 
 
-package org.usfirst.frc4089.VisionBot;
+package org.usfirst.frc4089.Test;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc4089.VisionBot.commands.*;
-import org.usfirst.frc4089.VisionBot.subsystems.*;
+import org.usfirst.frc4089.Test.commands.*;
+import org.usfirst.frc4089.Test.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -99,8 +100,6 @@ public class Robot extends TimedRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         if (autonomousCommand != null) autonomousCommand.cancel();
-        RobotMap.gyro.reset();
-        Robot.driveBase.ClearEncoders();
     }
 
     /**

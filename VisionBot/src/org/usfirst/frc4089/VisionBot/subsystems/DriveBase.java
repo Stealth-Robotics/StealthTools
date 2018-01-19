@@ -47,6 +47,7 @@ public class DriveBase extends Subsystem {
     private double mLastError = 0.0;
     private double mAcumError = 0.0;
     private static final double kMaxAcum = 100;
+    private int mDebugCount = 0;
     
     @Override
     public void initDefaultCommand() {
@@ -115,18 +116,45 @@ public class DriveBase extends Subsystem {
 
     protected void RawDrive(double y, double x) {
     	double targetSpeedL = (y+x) * 4096 * 400.0 / 600; 
-    	double targetSpeedR = (y-x) * 4096 * 400.0 / 600; 
-    	RobotMap.driveBaseLeftMain.set(ControlMode.Velocity, targetSpeedL); /* 1500 RPM in either direction */
-    	RobotMap.driveBaseLeftSecond.set(ControlMode.Velocity, targetSpeedL); /* 1500 RPM in either direction */
-    	RobotMap.driveBaseRightMain.set(ControlMode.Velocity, -1*targetSpeedR); /* 1500 RPM in either direction */
-    	RobotMap.driveBaseRightSecond.set(ControlMode.Velocity, -1*targetSpeedR); /* 1500 RPM in either direction */
-
+    	double targetSpeedR = (y-x) * 4096 * 400.0 / 600;
+    	RobotMap.driveBaseLeftMain.set(ControlMode.Velocity, targetSpeedL);
+    	RobotMap.driveBaseLeftSecond.set(ControlMode.Velocity, targetSpeedL);
+    	RobotMap.driveBaseRightMain.set(ControlMode.Velocity, -1*targetSpeedR);
+    	RobotMap.driveBaseRightSecond.set(ControlMode.Velocity, -1*targetSpeedR);
+        
+        /*
+    	double targetSpeedL = (y+x); 
+    	double targetSpeedR = (y-x);
+    	RobotMap.driveBaseLeftMain.set(ControlMode.PercentOutput, targetSpeedL);
+    	RobotMap.driveBaseLeftSecond.set(ControlMode.PercentOutput, targetSpeedL);
+    	RobotMap.driveBaseRightMain.set(ControlMode.PercentOutput, -1*targetSpeedR);
+    	RobotMap.driveBaseRightSecond.set(ControlMode.PercentOutput, -1*targetSpeedR);
+    	*/  
+    	
     	RobotMap.netTable.putNumber("lMotor", RobotMap.driveBaseLeftMain.getMotorOutputVoltage());
     	RobotMap.netTable.putNumber("rMotor", RobotMap.driveBaseRightMain.getMotorOutputVoltage());
     	RobotMap.netTable.putNumber("lEncoder", RobotMap.driveBaseLeftMain.getSelectedSensorPosition(0));
     	RobotMap.netTable.putNumber("rEncoder", RobotMap.driveBaseRightMain.getSelectedSensorPosition(0));
+
+    	if(mDebugCount>20)
+    	{
+    		System.out.format("%d %d %d %d\n", 
+    				RobotMap.driveBaseLeftMain.getSelectedSensorPosition(0),
+    				RobotMap.driveBaseRightMain.getSelectedSensorPosition(0),
+					RobotMap.driveBaseLeftMain.getSelectedSensorVelocity(0),
+					RobotMap.driveBaseRightMain.getSelectedSensorVelocity(0));
+    		
+    		mDebugCount = 0;
+    	}
+    	mDebugCount++;
     }
 
+    public void ClearEncoders()
+    {
+		RobotMap.driveBaseLeftMain.setSelectedSensorPosition(0, 0, 20);
+		RobotMap.driveBaseRightMain.setSelectedSensorPosition(0, 0, 20);
+    }
+    
     /** @return 10% deadband */
 	double Db(double axisVal) {
 		if (axisVal < -0.10)
