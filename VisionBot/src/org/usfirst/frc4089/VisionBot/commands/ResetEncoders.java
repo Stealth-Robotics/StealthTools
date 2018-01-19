@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class ResetEncoders extends Command {
 	
-    WPI_TalonSRX driveBaseLeftMain = RobotMap.driveBaseLeftMain;
-    WPI_TalonSRX driveBaseRightMain = RobotMap.driveBaseRightMain;
-
     public ResetEncoders() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -29,8 +26,8 @@ public class ResetEncoders extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        driveBaseLeftMain.setSelectedSensorPosition(0,0,20);
-        driveBaseRightMain.setSelectedSensorPosition(0,0,20);
+    	RobotMap.leftEncoder.Clear();
+    	RobotMap.rightEncoder.Clear();
         return true;
     }
 

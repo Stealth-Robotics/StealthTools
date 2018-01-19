@@ -99,8 +99,8 @@ public class Robot extends TimedRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         if (autonomousCommand != null) autonomousCommand.cancel();
-        RobotMap.gyro.reset();
         Robot.driveBase.ClearEncoders();
+        RobotMap.pigeonIMU.setFusedHeading(0.0, 20);
     }
 
     /**

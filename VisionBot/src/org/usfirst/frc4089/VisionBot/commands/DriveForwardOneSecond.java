@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 import org.usfirst.frc4089.VisionBot.Robot;
 import org.usfirst.frc4089.VisionBot.RobotMap;
-import org.usfirst.frc4089.VisionBot.StopWatch;
+import stealth_libraries.StopWatch;
 
 /**
  *

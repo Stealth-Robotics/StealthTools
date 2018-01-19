@@ -47,7 +47,7 @@ public class ResetGyro extends Command {
     // Make this return true when this Command no longer needs to run execute()
     @Override
     protected boolean isFinished() {
-    	RobotMap.gyro.reset();
+    	RobotMap.pigeonIMU.setFusedHeading(0.0, 20);
         return true;
     }
 

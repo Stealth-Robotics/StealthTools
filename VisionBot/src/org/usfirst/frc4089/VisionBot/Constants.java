@@ -1,6 +1,11 @@
 package org.usfirst.frc4089.VisionBot;
 
 public class Constants {
+	//Hardware Constants
+	public static final int kGyroZ = 2;
+	public static final int kFastButton = 1;
+	public static final int kSlowButton = 2;
+		
 	//assorted variables
 	public static final double collectorSpeed = .5;
 	public static final double ellevatorSpeedUp = 1;
@@ -11,31 +16,31 @@ public class Constants {
 	public static final double rightSpeed = 1;
 	public static final double leftSpeed = .9;
 	public static final double curve = 0;//-0.2;
-
 	
 	//wheel info
-	public static final int wheelDiaIn = 6; //in
-	public static final double wheelCircIN = 6*Math.PI; //in
-	public static final double wheelCircFT = wheelCircIN/12;
+	public static final double kWheelDiam = 6.0; //in
+	public static final double kWheelCirc = kWheelDiam*Math.PI; //in
+	public static final double kEncoderPulsePerRev = 4096;
 	
-	//encoders
-	public static final int E4TEncoderPulsePerRev = 1440;
-	public static final double encoderRightDistanceFTPerPulse = wheelCircFT/E4TEncoderPulsePerRev;
-	public static final double encoderLeftDistanceFTPerPulse = wheelCircFT/E4TEncoderPulsePerRev;
-	public static final double encoderConversionDisFT = wheelCircFT/E4TEncoderPulsePerRev; //FT/pulse
-	public static final double encoderConversionDisIN = wheelCircIN/E4TEncoderPulsePerRev; //FT/pulse
+	//Speed
+	public static final double kNormalSpeed = 0.4;
+	public static final double kSlowSpeed = 0.2;
+		
+	// gyro
+	public static final double kGyroGain = Math.PI/180.0;
 	
 	//Motor IDs
-	public static final int rightMotor1SpeedControl = 6; //normally 6
-	public static final int rightMotor2SpeedControl = 7;
-	public static final int left1MotorSpeedControl = 1; //normally 1
-	public static final int left2MotorSpeedControl = 2;
+	public static final int kRightMotor1SpeedControl = 1; //normally 6
+	public static final int kRightMotor2SpeedControl = 2;
+	public static final int kLeftMotor1SpeedControl = 4;
+	public static final int kLeftMotor2SpeedControl = 3;
 	public static final int climbMotor1SpeedControl = 8; //normally 8
 	public static final int climbMotor2SpeedControl = 4;
 	public static final int ShooterMotorSpeedControl = 10;
 	public static final int ellevatorMotorSpeedControl = 9; //normally 9
 	public static final int agitatorMotorSpeedControl = 5;
-	public static final int collectorMotorControl = 3;
+	public static final int collectorMotorControl = 11;
+
 	//servos
 	public static final int shooterDoorPort = 1;
 	public static final int RBarrelBlockerPort = 2;

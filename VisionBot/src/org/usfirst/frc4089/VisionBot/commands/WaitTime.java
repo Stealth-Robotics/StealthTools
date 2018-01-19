@@ -11,7 +11,7 @@
 
 package org.usfirst.frc4089.VisionBot.commands;
 import edu.wpi.first.wpilibj.command.Command;
-import org.usfirst.frc4089.VisionBot.StopWatch;
+import stealth_libraries.StopWatch;
 
 /**
  *
