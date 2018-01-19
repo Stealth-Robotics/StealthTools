@@ -129,14 +129,20 @@ public class DriveBase extends Subsystem {
     	RobotMap.netTable.putNumber("lEncoder", RobotMap.leftEncoder.GetInches());
     	RobotMap.netTable.putNumber("rEncoder", RobotMap.rightEncoder.GetInches());
 
+    	Navigation.getInstance().setNewPose(RobotMap.leftEncoder.GetInches(),
+    										RobotMap.rightEncoder.GetInches());
+    	
     	if(true == debugDisplay.isExpired())
     	{
     		debugDisplay.reset();
-    		System.out.format("%7.2f %7.2f %7.2f %7.2f\n", 
+    		System.out.format("%7.2f %7.2f %7.2f %7.2f %7.2f %7.2f %7.2f\n", 
     				RobotMap.leftEncoder.GetInches(),
     				RobotMap.rightEncoder.GetInches(),
     				RobotMap.leftEncoder.GetVelocityInInches(),
-					RobotMap.rightEncoder.GetVelocityInInches());
+					RobotMap.rightEncoder.GetVelocityInInches(),
+					Navigation.getInstance().getX(),
+					Navigation.getInstance().getY(),
+					Navigation.getInstance().getThetaDeg());
     	}
     }
 

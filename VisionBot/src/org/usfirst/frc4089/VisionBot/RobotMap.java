@@ -11,6 +11,8 @@
 
 package org.usfirst.frc4089.VisionBot;
 
+import org.usfirst.frc4089.VisionBot.subsystems.Navigation;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -82,6 +84,9 @@ public class RobotMap {
         rightMotor2SpeedCpmtroler.set(ControlMode.Follower, Constants.kRightMotor1SpeedControl);
         rightMotor1SpeedCpmtroler.setInverted(true);
         rightMotor2SpeedCpmtroler.setInverted(true);
+        
+        Navigation.getInstance().setRobotWidth(28.0);
+        Navigation.getInstance().setNewPose(0, 0);
     }
     
     static void SetUpTalon(WPI_TalonSRX talon)

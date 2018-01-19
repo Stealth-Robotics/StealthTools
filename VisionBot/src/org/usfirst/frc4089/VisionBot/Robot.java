@@ -75,6 +75,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         Scheduler.getInstance().run();
+        Navigation.getInstance().reset();
     }
 
     @Override
@@ -101,6 +102,7 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) autonomousCommand.cancel();
         Robot.driveBase.ClearEncoders();
         RobotMap.pigeonIMU.setFusedHeading(0.0, 20);
+        Navigation.getInstance().reset();
     }
 
     /**
