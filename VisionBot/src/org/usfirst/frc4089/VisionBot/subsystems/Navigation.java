@@ -189,13 +189,13 @@ public class Navigation {
 		return mCurrentLocationTheta; 
 	}
 	
-    //--------------------------------------------------------------------
-    // Purpose:
-    //     Return the Theta of the robot in degrees
-    //
-    // Notes:
-    //     None.
-    //--------------------------------------------------------------------	
+  // --------------------------------------------------------------------
+  // Purpose:
+  // Return the Theta of the robot in degrees
+  //
+  // Notes:
+  // None.
+  // --------------------------------------------------------------------
 	public double getThetaDeg()
 	{
 		return StealthMath.RadToDeg(mCurrentLocationTheta); 
