@@ -115,22 +115,39 @@ public class Encoder {
 		return mTalon.getSelectedSensorPosition(0);
 	}
 	
-    //--------------------------------------------------------------------
-    // Purpose:
-    //     Return the inches traveled
-    //
-    // Notes:
-    //     None.
-    //--------------------------------------------------------------------	
-	public double GetInches()
-	{
-		if(0 != mTicksPerRev)
-		{
-			return mTalon.getSelectedSensorPosition(0) / mTicksPerRev * mRevToInches;
-		}
-		
-		return 0.0;
-	}
+  //--------------------------------------------------------------------
+  // Purpose:
+  //     Return the inches traveled
+  //
+  // Notes:
+  //     None.
+  //--------------------------------------------------------------------  
+public double GetInches()
+{
+  if(0 != mTicksPerRev)
+  {
+    return mTalon.getSelectedSensorPosition(0) / mTicksPerRev * mRevToInches;
+  }
+  
+  return 0.0;
+}
+
+//--------------------------------------------------------------------
+// Purpose:
+//     Return the feet traveled
+//
+// Notes:
+//     None.
+//--------------------------------------------------------------------  
+public double GetFeet()
+{
+if(0 != mTicksPerRev)
+{
+  return GetInches()/12.0;
+}
+
+return 0.0;
+}
 
     //--------------------------------------------------------------------
     // Purpose:

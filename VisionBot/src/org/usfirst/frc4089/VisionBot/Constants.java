@@ -23,11 +23,11 @@ public class Constants {
   public static final double kEncoderPulsePerRev = 4096;
 
   // Speed
-  public static final double kNormalSpeed = 0.4;
+  public static final double kNormalSpeed = 0.7;
   public static final double kSlowSpeed = 0.2;
 
   // gyro
-  public static final double kGyroGain = Math.PI / 180.0;
+  public static final double kGyroGain = Math.PI/180;
 
   // Motor IDs
   public static final int kRightMotor1SpeedControl = 1; // normally 6
