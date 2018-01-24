@@ -86,7 +86,7 @@ public class RobotMap {
     rightMotor2SpeedCpmtroler.setInverted(true);
 
     Navigation.getInstance().setRobotWidth(28.0);
-    Navigation.getInstance().setNewPose(0, 0);
+    Navigation.getInstance().setNewPose(0, 0, 0);
   }
 
   static void SetUpTalon(WPI_TalonSRX talon) {

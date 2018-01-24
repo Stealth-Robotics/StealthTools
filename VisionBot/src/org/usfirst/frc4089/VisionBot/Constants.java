@@ -7,6 +7,7 @@ public class Constants {
   public static final int kSlowButton = 2;
 
   // assorted variables
+  public static final double kAutoSpeed = 0.5;
   public static final double collectorSpeed = .5;
   public static final double ellevatorSpeedUp = 1;
   public static final double ellevatorSpeedDown = -.75;

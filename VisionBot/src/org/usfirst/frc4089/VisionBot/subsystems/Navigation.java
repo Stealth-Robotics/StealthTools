@@ -135,19 +135,20 @@ public class Navigation {
     // Notes:
     //     None.
     //--------------------------------------------------------------------	
-	public void setNewPose(double leftEncoder, double rightEncoder)
+	public void setNewPose(double leftEncoder, double rightEncoder, double currentAngle)
 	{
 		double deltaLeft = leftEncoder - mOldLeftEncoder;
 		double deltaRight = rightEncoder - mOldRightEncoder;
 		
 		double inches = (deltaLeft + deltaRight) / 2.0;
 		
-		mCurrentLocationTheta += (deltaLeft - deltaRight) / mRobotWheelWidth;
+    //mCurrentLocationTheta += (deltaLeft - deltaRight) / mRobotWheelWidth;
+    mCurrentLocationTheta = stealth_libraries.StealthMath.DegToRad(currentAngle);
 		
 		mCurrentLocationTheta = StealthMath.KeepAsCircle(mCurrentLocationTheta);
 		
 		mCurrentLocationY += inches * Math.cos(mCurrentLocationTheta); 
-        mCurrentLocationX += inches * Math.sin(mCurrentLocationTheta); 
+    mCurrentLocationX += inches * Math.sin(mCurrentLocationTheta); 
 		
 		mOldLeftEncoder = leftEncoder;
 		mOldRightEncoder = rightEncoder;
