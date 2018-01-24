@@ -106,4 +106,28 @@ public class StealthMath {
   static public double RadToDeg(double angle) {
     return angle * 180.0 / Math.PI;
   }
+  
+  // --------------------------------------------------------------------
+  // Purpose:
+  // Given the robot forward throttle and ratio, return the max
+  // corrective turning throttle to adjust for heading.  This is
+  // a simple method of avoiding using different gains for
+  // low speed, high speed, and no-speed (zero turns).
+  //
+  // Notes:
+  // None.
+  // --------------------------------------------------------------------
+  static public double MaxCorrection(double forwardThrot, double scalor) {
+    /* make it positive */
+    if(forwardThrot < 0) {forwardThrot = -forwardThrot;}
+    /* max correction is the current forward throttle scaled down */
+    forwardThrot *= scalor;
+    /* ensure caller is allowed at least 10% throttle,
+     * regardless of forward throttle */
+    if(forwardThrot < 0.10)
+      return 0.10;
+    return forwardThrot;
+  }
+
+  
 }

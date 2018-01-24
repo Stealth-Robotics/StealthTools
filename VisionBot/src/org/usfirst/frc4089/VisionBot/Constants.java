@@ -24,7 +24,7 @@ public class Constants {
 
   // Speed
   public static final double kNormalSpeed = 0.7;
-  public static final double kSlowSpeed = 0.2;
+  public static final double kSlowSpeed = 0.3;
 
   // gyro
   public static final double kGyroGain = Math.PI/180;

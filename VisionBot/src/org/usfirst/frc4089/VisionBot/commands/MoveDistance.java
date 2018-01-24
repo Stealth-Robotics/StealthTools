@@ -58,21 +58,26 @@ public class MoveDistance extends Command {
   protected void initialize() {
     mForward.reset();
     mCurTarget = mDistance + RobotMap.leftEncoder.GetInches();
+    Robot.driveBase.Drive(0,0);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveBase.Drive(-0.3, 0);
+    if(mCurTarget > 0)
+    {
+      Robot.driveBase.Drive(0.8, 0);
+    }
+    else
+    {
+      Robot.driveBase.Drive(-0.8, 0);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    double curLocation = mDistance + RobotMap.leftEncoder.GetInches();
-    System.out.print(mCurTarget);
-    System.out.print(" ");
-    System.out.println(curLocation);
+    double curLocation = RobotMap.leftEncoder.GetInches();
     if ((curLocation > mCurTarget) || (true == mForward.isExpired())) {
       Robot.driveBase.Drive(0, 0);
       return true;

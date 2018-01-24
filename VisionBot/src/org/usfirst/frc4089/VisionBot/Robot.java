@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     autonomousCommand = chooser.getSelected();
     // schedule the autonomous command (example)
+    driveBase.SetJoystick(false);
     if (autonomousCommand != null)
       autonomousCommand.start();
   }
@@ -104,6 +105,7 @@ public class Robot extends TimedRobot {
     Robot.driveBase.ClearEncoders();
     RobotMap.pigeonIMU.setFusedHeading(0.0, 20);
     Navigation.getInstance().reset();
+    driveBase.SetJoystick(true);
   }
 
   /**
