@@ -145,6 +145,7 @@ public class DriveBase extends Subsystem {
   //     Usually used in auto when we want to reset things
   //--------------------------------------------------------------------  
   public void Drive(double speed, double turn) {
+    System.out.println("Drive");
     PigeonIMU.FusionStatus fusionStatus = new PigeonIMU.FusionStatus();
     double [] xyz_dps = new double [3];
     RobotMap.pigeonIMU.getRawGyro(xyz_dps);
@@ -174,7 +175,7 @@ public class DriveBase extends Subsystem {
         RobotMap.netTable.putNumber("angleError", angleError);
         RobotMap.netTable.putNumber("turnAdj", turnThrottle);
         
-        RawDrive(forward,turnThrottle);
+        RawDrive(speed,turnThrottle);
       }
       else
       {
@@ -201,11 +202,11 @@ public class DriveBase extends Subsystem {
     
     double targetSpeedL = (mActualSpeed - turn) * 4096 * .8;
     double targetSpeedR = (mActualSpeed + turn) * 4096 * .8;
-    RobotMap.leftMotor1SpeedCpmtroler.set(ControlMode.Velocity, targetSpeedL);
-    RobotMap.rightMotor1SpeedCpmtroler.set(ControlMode.Velocity, targetSpeedR);
+    RobotMap.leftMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedL);
+    RobotMap.rightMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedR);
 
-    RobotMap.netTable.putNumber("lMotor", RobotMap.leftMotor1SpeedCpmtroler.getMotorOutputVoltage());
-    RobotMap.netTable.putNumber("rMotor", RobotMap.rightMotor1SpeedCpmtroler.getMotorOutputVoltage());
+    RobotMap.netTable.putNumber("lMotor", RobotMap.leftMotor1SpeedControler.getMotorOutputVoltage());
+    RobotMap.netTable.putNumber("rMotor", RobotMap.rightMotor1SpeedControler.getMotorOutputVoltage());
     RobotMap.netTable.putNumber("lEncoder", RobotMap.leftEncoder.GetInches());
     RobotMap.netTable.putNumber("rEncoder", RobotMap.rightEncoder.GetInches());
 

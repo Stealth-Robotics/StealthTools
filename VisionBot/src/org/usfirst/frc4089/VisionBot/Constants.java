@@ -18,6 +18,19 @@ public class Constants {
   public static final double leftSpeed = .9;
   public static final double curve = 0;// -0.2;
 
+  /**
+   * set to zero to skip waiting for confirmation, set to nonzero to wait
+   * and report to DS if action fails.
+   */
+  public static final int kTimeoutMs = 20;
+  
+  /**
+   * Base trajectory period to add to each individual 
+   * trajectory point's unique duration.  This can be set
+   * to any value within [0,255]ms.
+   */
+  public static final int kBaseTrajPeriodMs = 0;
+  
   // wheel info
   public static final double kWheelDiam = 6.0; // in
   public static final double kWheelCirc = kWheelDiam * Math.PI; // in
