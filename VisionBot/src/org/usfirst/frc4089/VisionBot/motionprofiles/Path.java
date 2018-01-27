@@ -11,7 +11,7 @@ public class Path {
       };
       
       mPath = new RawPath(4096,6,22);
-      mPath.SetPath(waypointPath, 10);
+      mPath.SetPath(waypointPath, 1);
   }
 
   public double[][] GetLeftPath()

@@ -39,8 +39,8 @@ public class RawPath {
     
     for(int i=0;i<path.length;i++)
     {
-      mRaw[i][0] = (path[i][0]/mInchesPerRev)*mTicksPerRev;
-      mRaw[i][1] = (path[i][1]/mInchesPerRev)*mTicksPerRev;
+      mRaw[i][0] = (path[i][0]/mInchesPerRev);
+      mRaw[i][1] = (path[i][1]/mInchesPerRev);
     }
     
     mTotalTime = time;
@@ -71,13 +71,13 @@ public class RawPath {
       mLeftPath[i][kPositionLoc] = mLeftPath[i-1][kPositionLoc] +
           GetDistance(mPlanner.leftPath[i-1],
           mPlanner.leftPath[i]);
-      mLeftPath[i][kVelocityLoc] = mPlanner.smoothLeftVelocity[i][1];
+      mLeftPath[i][kVelocityLoc] = mPlanner.smoothLeftVelocity[i][1]*60;
       mLeftPath[i][kTimeLoc] = mPlanner.smoothLeftVelocity[i][0]*1000;
 
       mRightPath[i][kPositionLoc] = mRightPath[i-1][kPositionLoc] +
           GetDistance(mPlanner.rightPath[i-1],
           mPlanner.rightPath[i]);
-      mRightPath[i][kVelocityLoc] = mPlanner.smoothRightVelocity[i][1];
+      mRightPath[i][kVelocityLoc] = mPlanner.smoothRightVelocity[i][1]*60;
       mRightPath[i][kTimeLoc] = mPlanner.smoothRightVelocity[i][0]*1000;
       
       System.out.format("%6.2f %6.2f %6.2f    %6.2f %6.2f %6.2f \n", 

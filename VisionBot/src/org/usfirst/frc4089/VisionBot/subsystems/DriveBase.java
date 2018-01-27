@@ -145,7 +145,6 @@ public class DriveBase extends Subsystem {
   //     Usually used in auto when we want to reset things
   //--------------------------------------------------------------------  
   public void Drive(double speed, double turn) {
-    System.out.println("Drive");
     PigeonIMU.FusionStatus fusionStatus = new PigeonIMU.FusionStatus();
     double [] xyz_dps = new double [3];
     RobotMap.pigeonIMU.getRawGyro(xyz_dps);
@@ -210,6 +209,19 @@ public class DriveBase extends Subsystem {
     RobotMap.netTable.putNumber("lEncoder", RobotMap.leftEncoder.GetInches());
     RobotMap.netTable.putNumber("rEncoder", RobotMap.rightEncoder.GetInches());
 
+    System.out.format("%6d %6d %6d %6d\n", 
+        RobotMap.leftMotor1SpeedControler.getSelectedSensorPosition(0),
+        RobotMap.rightMotor1SpeedControler.getSelectedSensorPosition(0),
+        RobotMap.leftMotor1SpeedControler.getSelectedSensorVelocity(0),
+        RobotMap.rightMotor1SpeedControler.getSelectedSensorVelocity(0));
+    
+    
+    if(Robot.oi.joystick1.getRawButton(5))
+    {
+      RobotMap.leftMotor1SpeedControler.setSelectedSensorPosition(0, 0, 20);
+      RobotMap.rightMotor1SpeedControler.setSelectedSensorPosition(0, 0, 20);
+    }
+    
     Navigation.getInstance().setNewPose(
         RobotMap.leftEncoder.GetInches(), 
         RobotMap.rightEncoder.GetInches(),
