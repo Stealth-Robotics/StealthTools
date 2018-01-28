@@ -30,6 +30,10 @@ public class Constants {
    * to any value within [0,255]ms.
    */
   public static final int kBaseTrajPeriodMs = 0;
+  /**
+   * Motor deadband, set to 1%.
+   */
+  public static final double kNeutralDeadband  = 0.01;
   
   // wheel info
   public static final double kWheelDiam = 6.0; // in

@@ -7,11 +7,12 @@ public class Path {
   { 
     double[][] waypointPath = new double[][]{
       {  0, 0},
-      {120, 0}
+      {120, 0},
+      {120, 120}
       };
       
       mPath = new RawPath(4096,6,22);
-      mPath.SetPath(waypointPath, 1);
+      mPath.SetPath(waypointPath, 2);
   }
 
   public double[][] GetLeftPath()

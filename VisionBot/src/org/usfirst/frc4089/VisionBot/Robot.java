@@ -85,11 +85,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    RobotMap.SetUpTalonsForAuto();
     autonomousCommand = chooser.getSelected();
     // schedule the autonomous command (example)
     driveBase.SetJoystick(false);
     if (autonomousCommand != null)
+    {
       autonomousCommand.start();
+    }
   }
 
   /**
@@ -102,6 +105,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    RobotMap.SetUpTalonsForTele();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
