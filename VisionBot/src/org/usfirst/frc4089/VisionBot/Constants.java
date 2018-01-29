@@ -18,6 +18,8 @@ public class Constants {
   public static final double leftSpeed = .9;
   public static final double curve = 0;// -0.2;
 
+  public static final double kTicksPerRev = 2096;
+  public static final double kTicksPErRevSpeeed = 2.826;
   /**
    * set to zero to skip waiting for confirmation, set to nonzero to wait
    * and report to DS if action fails.

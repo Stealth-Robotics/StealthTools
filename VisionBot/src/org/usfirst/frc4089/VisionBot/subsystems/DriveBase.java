@@ -58,6 +58,7 @@ public class DriveBase extends Subsystem {
   boolean mSendJoystickCommands = true;   // send the joystick to the drive, we surpress this in auto
   double mCurrentAngle = 0.0;
   double mActualSpeed = 0.0;
+  StopWatch mDisplay = new StopWatch(500);
 
   //--------------------------------------------------------------------
   // Purpose:
@@ -189,7 +190,7 @@ public class DriveBase extends Subsystem {
     // Ramp the speed
     if(mActualSpeed != speed)
     {
-      if(mActualSpeed>speed)
+      if(mActualSpeed<speed)
       {
         mActualSpeed = Math.min(mActualSpeed+kSpeedGain, speed);
       }
@@ -209,12 +210,15 @@ public class DriveBase extends Subsystem {
     RobotMap.netTable.putNumber("lEncoder", RobotMap.leftEncoder.GetInches());
     RobotMap.netTable.putNumber("rEncoder", RobotMap.rightEncoder.GetInches());
 
-    System.out.format("%6d %6d %6d %6d\n", 
+    if(true == mDisplay.isExpired())
+    {
+      mDisplay.reset();
+      System.out.format("%6d %6d %6d %6d\n", 
         RobotMap.leftMotor1SpeedControler.getSelectedSensorPosition(0),
         RobotMap.rightMotor1SpeedControler.getSelectedSensorPosition(0),
         RobotMap.leftMotor1SpeedControler.getSelectedSensorVelocity(0),
         RobotMap.rightMotor1SpeedControler.getSelectedSensorVelocity(0));
-    
+    }
     
     if(Robot.oi.joystick1.getRawButton(5))
     {

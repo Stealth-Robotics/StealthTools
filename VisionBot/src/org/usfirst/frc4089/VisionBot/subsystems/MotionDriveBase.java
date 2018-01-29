@@ -60,7 +60,7 @@ public class MotionDriveBase {
    * Just a state timeout to make sure we don't get stuck anywhere. Each loop
    * is about 20ms.
    */
-  private static final int kNumLoopsTimeout = 10;  
+  private static final int kNumLoopsTimeout = 1000;  
   
   private MotionProfileStatus mMotionStatusLeft = new MotionProfileStatus();
   private MotionProfileStatus mMotionStatusRight = new MotionProfileStatus();
@@ -114,8 +114,8 @@ public class MotionDriveBase {
     /* This is fast since it's just into our TOP buffer */
     for (int i = 0; i < numberOfPoints; ++i) {
       /* for each point, fill our structure and pass it to API */
-      leftPoint.position = leftPath[i][0]; //Convert Revolutions to Units
-      leftPoint.velocity = leftPath[i][1]; //Convert RPM to Units/100ms
+      leftPoint.position = leftPath[i][0]*Constants.kTicksPerRev; //Convert Revolutions to Units
+      leftPoint.velocity = leftPath[i][1]*Constants.kTicksPErRevSpeeed; //Convert RPM to Units/100ms
       leftPoint.timeDur = GetTrajectoryDuration(20);
       leftPoint.zeroPos = false;
       if (i == 0)
@@ -131,7 +131,7 @@ public class MotionDriveBase {
       
       ErrorCode errorCode = RobotMap.leftMotor1SpeedControler.pushMotionProfileTrajectory(leftPoint);
       /*
-      System.out.format("%d %f %b %f %d %d %d %f %b",i,
+      System.out.format("%d %f %b %f %d %d %d %f %b ",i,
           leftPoint.headingDeg,
           leftPoint.isLastPoint,
           leftPoint.position,
@@ -144,10 +144,9 @@ public class MotionDriveBase {
       */
       
       /* for each point, fill our structure and pass it to API */
-      rightPoint.position = rightPath[i][0]; //Convert Revolutions to Units
-      rightPoint.velocity = rightPath[i][1]; //Convert RPM to Units/100ms
+      rightPoint.position = rightPath[i][0]*Constants.kTicksPerRev; //Convert Revolutions to Units
+      rightPoint.velocity = rightPath[i][1]*Constants.kTicksPErRevSpeeed; //Convert RPM to Units/100ms
       rightPoint.timeDur = GetTrajectoryDuration(20);
-      //rightPoint.timeDur = rightPath[i][2];
       rightPoint.zeroPos = false;
       if (i == 0)
       {
@@ -196,11 +195,16 @@ public class MotionDriveBase {
   //     None.
   //--------------------------------------------------------------------  
   public void periodic() {
+    MotionProfileStatus _status = new MotionProfileStatus();
+    double _pos=0,_vel=0,_heading=0;
+    
+    
     RobotMap.leftMotor1SpeedControler.set(
         ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
     
     RobotMap.rightMotor1SpeedControler.set(
-        ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
+        ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);    
+    
   }
 
   //--------------------------------------------------------------------
@@ -231,23 +235,13 @@ public class MotionDriveBase {
     
     RobotMap.leftMotor1SpeedControler.getMotionProfileStatus(mMotionStatusLeft);
     RobotMap.rightMotor1SpeedControler.getMotionProfileStatus(mMotionStatusRight);
- /*
-    System.out.println("bbca:"+mMotionStatusLeft.btmBufferCnt);
-    System.out.println("bbcb:"+mMotionStatusLeft.profileSlotSelect);
-    System.out.println("bbcc:"+mMotionStatusLeft.profileSlotSelect1);
-    System.out.println("bbcd:"+mMotionStatusLeft.timeDurMs);
-    System.out.println("bbce:"+mMotionStatusLeft.topBufferCnt);
-    System.out.println("bbcf:"+mMotionStatusLeft.topBufferRem);
-    System.out.println("bbcg:"+mMotionStatusLeft.activePointValid);
-    System.out.println("bbch:"+mMotionStatusLeft.hasUnderrun);
-    System.out.println("bbci:"+mMotionStatusLeft.isLast);
-    System.out.println("bbcj:"+mMotionStatusLeft.isUnderrun);
-    System.out.println("bbck:"+mMotionStatusLeft.outputEnable);
-   */ 
-    if((false == mMotionStatusLeft.activePointValid)||
-        (false == mMotionStatusRight.activePointValid))
+     
+    System.out.println(mMotionStatusLeft.isLast);
+    if((true == mMotionStatusLeft.isLast)||
+        (true == mMotionStatusRight.isLast))
     {
-      return false;
+      //System.out.println("End");
+      return true;
     }
     
     return false;

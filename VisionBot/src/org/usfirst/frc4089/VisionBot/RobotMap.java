@@ -85,6 +85,7 @@ public class RobotMap {
 
   public static void SetUpTalonsForTele()
   {
+    System.out.println("SetUpTalonsForTele");
     SetUpTalonForTele(leftMotor1SpeedControler);
     SetUpTalonForTele(rightMotor1SpeedControler);
     leftMotor2SpeedControler.set(ControlMode.Follower, Constants.kLeftMotor1SpeedControl);
@@ -116,6 +117,7 @@ public class RobotMap {
 
   public static void SetUpTalonsForAuto()
   {
+    System.out.println("SetUpTalonsForAuto");
     SetUpTalonForAuto(leftMotor1SpeedControler);
     SetUpTalonForAuto(rightMotor1SpeedControler);
     leftMotor2SpeedControler.set(ControlMode.Follower, Constants.kLeftMotor1SpeedControl);

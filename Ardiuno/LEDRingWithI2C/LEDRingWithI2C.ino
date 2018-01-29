@@ -65,12 +65,15 @@ bool mGoodPacket = false;
 //----------------------------------------------------------------------------
 void setup() 
 {
+  Serial.begin(115200);
   pinMode(LEDPin, OUTPUT);
   Wire.begin(40);              
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
   mStrip.begin();
   mStrip.show();
+
+  Serial.print("Test");
 }
 
 //----------------------------------------------------------------------------
@@ -88,6 +91,7 @@ void loopGreen()
 
 void loop() 
 {
+  Serial.println("Test");
   if(true == mGoodPacket)
   {
     mAlliance = mBuffer[LOC_LED_STATUS];
@@ -194,7 +198,7 @@ void SpinColor(int color)
 void requestEvent() 
 {
   mSend[LOC_START] = SER_START;
-  mSend[MAX_SEND - LOC_CHECK_BYTE] = CalcCheckByte(mSend, LOC_COMMAND, MAX_SEND - LOC_DATA_END);
+  mSend[MAX_SEND - LOC_CHECK_BYTE] = CalcCheckByte(mSend, LOC_PI_STATUS, MAX_SEND - LOC_DATA_END);
   mSend[MAX_SEND - LOC_END] = SER_END;
 
   Wire.write(mSend[0]);
@@ -316,7 +320,7 @@ bool DoWeHaveAGoodMessage()
     //Is the preamble where it should be
     if ((mBuffer[LOC_START] == SER_START) && (mBuffer[theLength - LOC_END] == SER_END))
     {
-      uint8 checkByte = CalcCheckByte(mBuffer, LOC_COMMAND, theLength - LOC_DATA_END);
+      uint8 checkByte = CalcCheckByte(mBuffer, LOC_PI_STATUS, theLength - LOC_DATA_END);
 
       if (checkByte == mBuffer[theLength - LOC_CHECK_BYTE])
       {
