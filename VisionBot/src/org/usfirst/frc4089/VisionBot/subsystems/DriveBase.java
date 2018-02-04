@@ -117,14 +117,14 @@ public class DriveBase extends Subsystem {
   //--------------------------------------------------------------------  
   public void Drive(Joystick driveJoystick) {
     double y = driveJoystick.getRawAxis(1)*-1;
-    double x = driveJoystick.getRawAxis(0)*-1;
+    double x = driveJoystick.getRawAxis(4)*-1;
 
     // Adjust for speed, check if the fast button is pushed
-    if (true == driveJoystick.getRawButton(Constants.kFastButton)) {
+    if (driveJoystick.getRawButton(Constants.kFastButton)) {
       // Do Nothing
     } else {
       // Is the slow button pushed
-      if (true == driveJoystick.getRawButton(Constants.kSlowButton)) {
+      if (driveJoystick.getRawAxis(Constants.kSlowTrigger) > 0) {
         y *= Constants.kSlowSpeed;
         x *= Constants.kSlowSpeed;
       } else {
@@ -132,7 +132,7 @@ public class DriveBase extends Subsystem {
         x *= Constants.kNormalSpeed;
       }
     }
-    if(true == mSendJoystickCommands)
+    if(mSendJoystickCommands)
     {
       Drive(y, x);
     }
@@ -156,13 +156,13 @@ public class DriveBase extends Subsystem {
     double turnThrottle = turn;
     
     // IF we are turning, turn off the gyro
-    if (Math.abs(turn) > 0.2) {
+    if (Math.abs(turn) > 0.1) {
       RawDrive(speed/1.3, turn/1.3);
       mTargetAngle = mCurrentAngle;
     } else {
       if (Math.abs(speed) > 0.1) {
         double angleError = (mTargetAngle - mCurrentAngle);
-        /* very simple Proportional and Derivative (PD) loop with a cap,
+        /* very simple Proportional and Derivative   (PD) loop with a cap,
          * replace with favorite close loop strategy or leverage future Talon <=> Pigeon features. */
         turnThrottle = angleError * kPgain - (currentAngularRate) * kDgain;
         /* the max correction is the forward throttle times a scalar,
@@ -200,8 +200,8 @@ public class DriveBase extends Subsystem {
       }
     }
     
-    double targetSpeedL = (mActualSpeed - turn) * 4096 * .8;
-    double targetSpeedR = (mActualSpeed + turn) * 4096 * .8;
+    double targetSpeedL = (mActualSpeed - turn) * 3383.00;
+    double targetSpeedR = (mActualSpeed + turn) * 3019.71;
     RobotMap.leftMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedL);
     RobotMap.rightMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedR);
 
@@ -210,7 +210,7 @@ public class DriveBase extends Subsystem {
     RobotMap.netTable.putNumber("lEncoder", RobotMap.leftEncoder.GetInches());
     RobotMap.netTable.putNumber("rEncoder", RobotMap.rightEncoder.GetInches());
 
-    if(true == mDisplay.isExpired())
+    if(mDisplay.isExpired())
     {
       mDisplay.reset();
       System.out.format("%6d %6d %6d %6d\n", 
