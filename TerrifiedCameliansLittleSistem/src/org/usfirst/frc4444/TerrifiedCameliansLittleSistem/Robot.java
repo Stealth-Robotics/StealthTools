@@ -85,6 +85,7 @@ public class Robot extends TimedRobot {
         Robot.driveBase.ResetEncoders();
         RobotMap.SetUpTalonsForTele();
         Robot.driveBase.SetAuto();
+        RobotMap.pigeonIMU.setFusedHeading(0.0, 10);
    }
 
     /**

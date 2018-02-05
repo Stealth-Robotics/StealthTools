@@ -205,12 +205,36 @@ public class DriveBase extends Subsystem {
 
   public void AutoDrive(double speedL, double speedR, double heading)
   {
-    double targetSpeedL = speedL*15;
-    double targetSpeedR = speedR*15;
+    PigeonIMU.FusionStatus fusionStatus = new PigeonIMU.FusionStatus();
+    double [] xyz_dps = new double [3];
+    RobotMap.pigeonIMU.getRawGyro(xyz_dps);
+    RobotMap.pigeonIMU.getFusedHeading(fusionStatus);
+    
+    mCurrentAngle = fusionStatus.heading;
+
+    if(heading>180)
+    {
+      heading -= 360.0;
+    }
+    
+    
+    double targetSpeedL = speedL*20;
+    double targetSpeedR = speedR*20;
+   
+      double angle_difference = heading - mCurrentAngle;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
+
+      double turn = -200.0*angle_difference;
+
+      targetSpeedL += turn;
+      targetSpeedR -= turn;
+    
+      System.out.format("%6.2f %6.2f %6.2f\n",
+          targetSpeedL,targetSpeedR,turn);
     
     RobotMap.leftMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedL);
     RobotMap.rightMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedR);
     
+    RobotMap.netTable.putNumber("gyroError", turn);
     RobotMap.netTable.putNumber("lMotor", RobotMap.leftMotor1SpeedControler.getMotorOutputVoltage());
     RobotMap.netTable.putNumber("rMotor", RobotMap.rightMotor1SpeedControler.getMotorOutputVoltage());
     RobotMap.netTable.putNumber("lEncoder", 
@@ -239,8 +263,8 @@ public class DriveBase extends Subsystem {
       }
     }
     
-    mActualSpeed = Math.sin(mSinCount);
-    mSinCount+=.01;
+    //mActualSpeed = Math.sin(mSinCount);
+    //mSinCount+=.01;
         
     double targetSpeedL = (mActualSpeed + turn) * 1820;
     double targetSpeedR = (mActualSpeed - turn) * 2000;

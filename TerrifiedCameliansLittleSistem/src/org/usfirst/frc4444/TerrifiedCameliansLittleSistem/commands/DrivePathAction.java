@@ -3,54 +3,45 @@ package org.usfirst.frc4444.TerrifiedCameliansLittleSistem.commands;
 import edu.wpi.first.wpilibj.command.Command;
 
 import org.usfirst.frc4444.TerrifiedCameliansLittleSistem.Robot;
-import org.usfirst.frc4444.TerrifiedCameliansLittleSistem.pathfinding.*;
 import org.usfirst.frc4444.TerrifiedCameliansLittleSistem.paths.*;
-import org.usfirst.frc4444.TerrifiedCameliansLittleSistem.pathfinding.*;
 
 
 public class DrivePathAction extends Command {
-  RawPath mPath;
-  double[][] mLeftPath;
-  double[][] mRightPath;
-  int mCount = 0;
+    private Path mPath;
+    private int mCount = 0;
   
     public DrivePathAction(Path path) {
+      mPath = path;
       mCount = 0;
-      mPath = new RawPath(220,4,14);
-      mPath.SetPath(path.GetWaypoint(), path.GetTime());
-    
-      mLeftPath = mPath.GetLeftPath();
-      mRightPath = mPath.GetRightPath();
     }
 
     @Override
     public boolean isFinished() {
-        return (mCount>mRightPath.length);
+      int curCount = mPath.kNumPoints - mCount;
+        if(curCount<1)
+        {
+          System.out.println(mPath.kNumPoints);
+          return true;
+        }
+        
+        return false;
     }
 
     @Override
     public void execute() {
-      if(mCount<mRightPath.length)
+      if(mCount<mPath.kNumPoints)
       {
-        Robot.driveBase.AutoDrive(mLeftPath[mCount][1], mRightPath[mCount][1], mLeftPath[mCount][3]);
-        /*
-        System.out.format("%6.2f %6.2f %6.2f %6.2f   %6.2f %6.2f %6.2f %6.2f\n", 
-          mLeftPath[mCount][0],
-          mLeftPath[mCount][1],
-          mLeftPath[mCount][2],
-          mLeftPath[mCount][3],
-          mRightPath[mCount][0],
-          mRightPath[mCount][1],
-          mRightPath[mCount][2],
-          mRightPath[mCount][3]);
-          */
+        Robot.driveBase.AutoDrive(
+            mPath.kPoints[mCount][0],
+            mPath.kPoints[mCount][1],
+            mPath.kPoints[mCount][2]);
       }
       mCount++;
     }
 
     @Override
     public void end() {
-        // TODO: Perhaps set wheel velocity to 0?
+        Robot.driveBase.Drive(0, 0);
     }
 
     @Override

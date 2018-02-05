@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class ScoreInSwitch extends CommandGroup {
   public ScoreInSwitch() {
 //    addSequential(new DrivePathAction(new Path()));
-    addSequential(new DrivePathAction(new TurnCorner()));
+//    addSequential(new DrivePathAction(new Move10Path()));
+    addSequential(new DrivePathAction(new Red21Path()));
   }
 
   // Called just before this Command runs the first time
