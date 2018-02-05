@@ -54,6 +54,7 @@ uint8 mBuffer[MAX_PACKET];
 uint8 mBufferLoc = 0;
 uint8 mSend[MAX_SEND];
 bool mGoodPacket = false;
+uint16 mCommCount = 0;
 
 //----------------------------------------------------------------------------
 //  Purpose:
@@ -67,7 +68,7 @@ void setup()
 {
   Serial.begin(115200);
   pinMode(LEDPin, OUTPUT);
-  Wire.begin(40);              
+  Wire.begin(43);              
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
   mStrip.begin();
@@ -91,9 +92,14 @@ void loopGreen()
 
 void loop() 
 {
-  Serial.println("Test");
+  putU16IntoU8Array(mSend,LOC_DATA_START,mCommCount);
+  
   if(true == mGoodPacket)
   {
+    int otherCommCount = GetU16FrombyteArray(mBuffer, LOC_DATA_START);
+   mCommCount++;
+   Serial.print("got:");
+    Serial.println(otherCommCount);
     mAlliance = mBuffer[LOC_LED_STATUS];
     RemoveDataForNextMessage(MAX_RECEIVE, true);
     mGoodPacket = false;
@@ -124,6 +130,29 @@ void loop()
   
   delay(10);
 }
+
+///--------------------------------------------------------------------
+/// Purpose:
+/// <summary>
+///      Pull a short out of a data buffer
+/// </summary>
+/// 
+/// Returns:
+/// <returns>
+///     The UInt16 from the data
+/// </returns>
+/// 
+/// Notes:
+/// <remarks>
+///     None.
+/// </remarks>
+///--------------------------------------------------------------------
+int GetU16FrombyteArray(uint8* data, int location)
+{
+  return (int)((data[location+1] << 8) +
+    data[location]);
+}
+
 
 //----------------------------------------------------------------------------
 //  Purpose:
@@ -195,43 +224,24 @@ void SpinColor(int color)
 //      None
 //
 //----------------------------------------------------------------------------
+void requestEventx() 
+{
+  Wire.write('1');
+  Wire.write('2');
+  Wire.write('3');
+  Wire.write('4');
+  Wire.write('5');
+}
 void requestEvent() 
 {
   mSend[LOC_START] = SER_START;
   mSend[MAX_SEND - LOC_CHECK_BYTE] = CalcCheckByte(mSend, LOC_PI_STATUS, MAX_SEND - LOC_DATA_END);
   mSend[MAX_SEND - LOC_END] = SER_END;
 
-  Wire.write(mSend[0]);
-
-  for (uint8 index = 1; index < MAX_SEND - 1; index++)
+  for (uint8 index = 0; index < MAX_SEND; index++)
   {
-    if (SER_START == mSend[index])
-    {
-      Wire.write(SER_SPECIAL);
-      Wire.write(SPC_START);
-    }
-    else
-    {
-      if (SER_END == mSend[index])
-      {
-        Wire.write(SER_SPECIAL);
-        Wire.write(SPC_END);
-      }
-      else
-      {
-        if (SER_SPECIAL == mSend[index])
-        {
-          Wire.write(SER_SPECIAL);
-          Wire.write(SPC_SPECIAL);
-        }
-        else
-        {
-          Wire.write(mSend[index]);
-        }
-      }
-    }
+    Wire.write(mSend[index]);
   }
-  Wire.write(mSend[MAX_SEND - 1]);
 }
 
 //----------------------------------------------------------------------------
@@ -250,23 +260,6 @@ void receiveEvent(int howMany)
   while ((Wire.available() > 0) && (mBufferLoc < MAX_PACKET))
   {
     theByte = Wire.read();
-    // If the char is one of the special chars then convert it to the real char.
-    if (SER_SPECIAL == theByte)
-    {
-      theByte = Wire.read();
-      if (SPC_START == theByte)
-      {
-        theByte = SER_START;
-      }
-      if (SPC_END == theByte)
-      {
-        theByte = SER_END;
-      }
-      if (SPC_SPECIAL == theByte)
-      {
-        theByte = SER_SPECIAL;
-      }
-    }
 
     // Add the byte to the buffer
     mBuffer[mBufferLoc] = theByte;

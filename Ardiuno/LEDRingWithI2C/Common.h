@@ -7,21 +7,18 @@ typedef unsigned long uint32;
 
 const uint8 SER_START = 0xA0;
 const uint8 SER_END = 0xA1;
-const uint8 SER_SPECIAL = 0xA2;
-const uint8 SPC_START = 0xD0;
-const uint8 SPC_END = 0xD1;
-const uint8 SPC_SPECIAL = 0xD2;
 
 const uint8 LOC_START      = 0;
 const uint8 LOC_PI_STATUS  = 1;
 const uint8 LOC_LED_STATUS = 2;
+const uint8 LOC_DATA_START = 3;
 const uint8 LOC_END        = 1;
 const uint8 LOC_CHECK_BYTE = 2;
 const uint8 LOC_DATA_END   = 3;
 
 const uint8  MAX_TEAM_COLOR      = 34;
 const uint8  MAX_RECEIVE         = 22;
-const uint8  MAX_SEND            = 38;
+const uint8  MAX_SEND            = 30;
 const uint8  MAX_LEDS            = 16;
 const uint8  MAX_PACKET          = 80;
 

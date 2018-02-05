@@ -29,3 +29,17 @@ void putU32IntoU8Array(char* data, int location, long value)
     data[location + 3] = (char)(value & 0xFF);
 }
 
+//----------------------------------------------------------------------------
+//  Purpose:
+//      Chop a int up and put it into a buffer
+//
+//  Notes:
+//      None
+//
+//----------------------------------------------------------------------------
+void putU16IntoU8Array(char* data, int location, int value)
+{
+    data[location + 1] = (char)((value >> 8) & 0xFF);
+    data[location + 0] = (char)(value & 0xFF);
+}
+
