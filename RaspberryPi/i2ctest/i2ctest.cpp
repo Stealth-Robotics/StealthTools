@@ -13,6 +13,9 @@
 
 using namespace std;
 
+//----------------------------------------------------------------------------
+//  Local typedefs
+//----------------------------------------------------------------------------
 typedef unsigned char  uint8;
 typedef unsigned short uint16;
 typedef unsigned long  uint32;
@@ -20,6 +23,9 @@ typedef char  sint8;
 typedef short sint16;
 typedef long  sint32;
 
+//----------------------------------------------------------------------------
+//  Local constants
+//----------------------------------------------------------------------------
 const uint8 SER_START = 0xA0;
 const uint8 SER_END = 0xA1;
 
@@ -34,65 +40,62 @@ const uint8 LOC_DATA_END = 3;
 const uint8  MAX_TEAM_COLOR = 34;
 const uint8  MAX_SEND = 22;
 const uint8  MAX_RECEIVE = 30;
-const int  MAX_PACKET = 2000;
+const int    MAX_PACKET = 2000;
+const int    WAIT_TIME = 1000;  //us
+const int    I2C_ADDR = 43;
+const int    SMALL_READ_BUFFER = 60;
 
-void receiveEvent(int howMany);
-bool DoWeHaveAGoodMessage();
-uint8 CalcCheckByte(uint8* data, uint8 start, uint8 number);
-uint8 FindNextMessage();
-void RemoveDataForNextMessage(uint8 offset, bool isBad);
-void sendMessage();
-void putU16IntoU8Array(uint8* data, uint8 location, int value);
-int GetU16FrombyteArray(uint8* data, int location);
+//----------------------------------------------------------------------------
+//  Local functions
+//----------------------------------------------------------------------------
+void  receiveEvent();
+bool  doWeHaveAGoodMessage();
+uint8 calcCheckByte(uint8* data, uint8 start, uint8 number);
+uint8 findNextMessage();
+void  removeDataForNextMessage(uint8 offset, bool isBad);
+void  sendMessage();
+void  putU16IntoU8Array(uint8* data, uint8 location, int value);
+int   getU16FrombyteArray(uint8* data, int location);
+void  iniI2C(int addr);
 
-const int waitTime = 1000;  //us
+//----------------------------------------------------------------------------
+//  Global vars
+//----------------------------------------------------------------------------
+int    gFileI2c;
+uint8  gBuffer[MAX_PACKET];
+uint8  gBufferLoc = 0;
+uint8  gSend[MAX_SEND];
+bool   gGoodPacket = false;
+uint16 gCommCount = 0;
+uint8  gReadBuffer[SMALL_READ_BUFFER];
 
-int mFileI2c;
-uint8 mBuffer[MAX_PACKET];
-uint8 mBufferLoc = 0;
-uint8 mSend[MAX_SEND];
-bool mGoodPacket = false;
-uint16 mCommCount = 0;
-
-void iniI2C(int addr)
-{
-  //----- OPEN THE I2C BUS -----
-  char *filename = (char*)"/dev/i2c-1";
-  if ((mFileI2c = open(filename, O_RDWR)) < 0)
-  {
-    //ERROR HANDLING: you can check errno to see what went wrong
-    printf("Failed to open the i2c bus");
-    return;
-  }
-
-  if (ioctl(mFileI2c, I2C_SLAVE, addr) < 0)
-  {
-    printf("Failed to acquire bus access and/or talk to slave.\n");
-    //ERROR HANDLING; you can check errno to see what went wrong
-    return;
-  }
-}
-
-
+//----------------------------------------------------------------------------
+//  Purpose:
+//      Main loop
+//
+//  Notes:
+//      None
+//
+//----------------------------------------------------------------------------
 int main(void)
 {
   int comCount = 0;
   int otherCommCount = 0;
   int oldOtherCommCount = 0;
-  iniI2C(43);
-
+  iniI2C(I2C_ADDR);
 
   while (true)
   {
+    gSend[LOC_LED_STATUS] = 'B';
     sendMessage();
-    usleep(waitTime);
-    receiveEvent(1);
+    usleep(WAIT_TIME);
+    receiveEvent();
 
-    if (true == mGoodPacket)
+    if (true == gGoodPacket)
     {
       comCount++;
-      putU16IntoU8Array(mSend, LOC_DATA_START, comCount);
-      otherCommCount = GetU16FrombyteArray(mBuffer, LOC_DATA_START);
+      putU16IntoU8Array(gSend, LOC_DATA_START, comCount);
+      otherCommCount = getU16FrombyteArray(gBuffer, LOC_DATA_START);
       if ((0 != otherCommCount)&&(0xFFFF != otherCommCount))
       {
         printf("Good packet:%d\n", otherCommCount);
@@ -101,6 +104,34 @@ int main(void)
     }
   }
 }
+
+//----------------------------------------------------------------------------
+//  Purpose:
+//      Startup the I2C
+//
+//  Notes:
+//      None
+//
+//----------------------------------------------------------------------------
+void iniI2C(int addr)
+{
+  //----- OPEN THE I2C BUS -----
+  char *filename = (char*)"/dev/i2c-1";
+  if ((gFileI2c = open(filename, O_RDWR)) < 0)
+  {
+    //ERROR HANDLING: you can check errno to see what went wrong
+    printf("Failed to open the i2c bus");
+    return;
+  }
+
+  if (ioctl(gFileI2c, I2C_SLAVE, addr) < 0)
+  {
+    printf("Failed to acquire bus access and/or talk to slave.\n");
+    //ERROR HANDLING; you can check errno to see what went wrong
+    return;
+  }
+}
+
 
 ///--------------------------------------------------------------------
 /// Purpose:
@@ -118,13 +149,11 @@ int main(void)
 ///     None.
 /// </remarks>
 ///--------------------------------------------------------------------
-int GetU16FrombyteArray(uint8* data, int location)
+int getU16FrombyteArray(uint8* data, int location)
 {
   return (int)((data[location+1] << 8) +
     data[location]);
 }
-
-
 
 //----------------------------------------------------------------------------
 //  Purpose:
@@ -141,58 +170,14 @@ void putU16IntoU8Array(uint8* data, uint8 location, int value)
 }
 
 
-int mainx(void)
-{
-    int file_i2c;
-    int length;
-    unsigned char buffer[60] = { 0 };
-
-    //----- OPEN THE I2C BUS -----
-    char *filename = (char*)"/dev/i2c-1";
-    if ((file_i2c = open(filename, O_RDWR)) < 0)
-    {
-        //ERROR HANDLING: you can check errno to see what went wrong
-        printf("Failed to open the i2c bus");
-        return 0;
-    }
-
-    int addr = 0x40;          //<<<<<The I2C address of the slave
-    if (ioctl(file_i2c, I2C_SLAVE, addr) < 0)
-    {
-        printf("Failed to acquire bus access and/or talk to slave.\n");
-        //ERROR HANDLING; you can check errno to see what went wrong
-        return 0;
-    }
-
-    uint8 data[1];
-
-    data[0] = 'B';
-
-    //----- WRITE BYTES -----
-    length = 1;			//<<< Number of bytes to write
-    if (write(file_i2c, data, length) != length)		//write() returns the number of bytes actually written, if it doesn't match then an error occurred (e.g. no response from the device)
-    {
-        /* ERROR HANDLING: i2c transaction failed */
-        printf("Failed to write to the i2c bus.\n");
-    }
-
-    usleep(waitTime);
-
-    //----- READ BYTES -----
-    length = 1;			//<<< Number of bytes to read
-    if (read(file_i2c, buffer, length) != length)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
-    {
-        //ERROR HANDLING: i2c transaction failed
-        printf("Failed to read from the i2c bus.\n");
-    }
-    else
-    {
-        printf("Data read: %x %x %x %x\n", buffer[0], buffer[1], buffer[2], buffer[3]);
-    }
-
-    return 0;
-}
-
+//----------------------------------------------------------------------------
+//  Purpose:
+//      Write a byte to I2C
+//
+//  Notes:
+//      None
+//
+//----------------------------------------------------------------------------
 void writeByte(uint8 ch)
 {
   uint8 data[1];
@@ -201,34 +186,49 @@ void writeByte(uint8 ch)
 
   //----- WRITE BYTES -----
   uint8 length = 1;			//<<< Number of bytes to write
-  if (write(mFileI2c, data, length) != length)		//write() returns the number of bytes actually written, if it doesn't match then an error occurred (e.g. no response from the device)
+  if (write(gFileI2c, data, length) != length)		//write() returns the number of bytes actually written, if it doesn't match then an error occurred (e.g. no response from the device)
   {
   }
 }
 
-uint8 mReadBuffer[60];
+//----------------------------------------------------------------------------
+//  Purpose:
+//      Read a block of bytes into a temp buffer
+//
+//  Notes:
+//      None
+//
+//----------------------------------------------------------------------------
 int ReadBytes()
 {
   //----- READ BYTES -----
   uint8 length = 60;			//<<< Number of bytes to read
-  length = read(mFileI2c, mReadBuffer, length);
+  length = read(gFileI2c, gReadBuffer, length);
   return length;
 }
 
 
+//----------------------------------------------------------------------------
+//  Purpose:
+//      Get bytes from the I2C
+//
+//  Notes:
+//      None
+//
+//----------------------------------------------------------------------------
 void sendMessage()
 {
-  mSend[LOC_START] = SER_START;
-  mSend[MAX_SEND - LOC_CHECK_BYTE] = CalcCheckByte(mSend, LOC_PI_STATUS, MAX_SEND - LOC_DATA_END);
-  mSend[MAX_SEND - LOC_END] = SER_END;
+  gSend[LOC_START] = SER_START;
+  gSend[MAX_SEND - LOC_CHECK_BYTE] = calcCheckByte(gSend, LOC_PI_STATUS, MAX_SEND - LOC_DATA_END);
+  gSend[MAX_SEND - LOC_END] = SER_END;
 
-  writeByte(mSend[0]);
+  writeByte(gSend[0]);
 
   for (uint8 index = 1; index < MAX_SEND - 1; index++)
   {
-    writeByte(mSend[index]);
+    writeByte(gSend[index]);
   }
-  writeByte(mSend[MAX_SEND - 1]);
+  writeByte(gSend[MAX_SEND - 1]);
 }
 
 //----------------------------------------------------------------------------
@@ -239,52 +239,52 @@ void sendMessage()
 //      None
 //
 //----------------------------------------------------------------------------
-void receiveEvent(int howMany)
+void receiveEvent()
 {
   int theByte = 0;
   uint8 count = 0;
   int readCount = ReadBytes();
   int curReadCount = 0;
 
-  while((curReadCount<readCount)&&(mBufferLoc < MAX_PACKET))
+  while((curReadCount<readCount)&&(gBufferLoc < MAX_PACKET))
   {
-    theByte = mReadBuffer[curReadCount++];
+    theByte = gReadBuffer[curReadCount++];
     // Add the byte to the buffer
-    mBuffer[mBufferLoc] = theByte;
-    mBufferLoc++;
+    gBuffer[gBufferLoc] = theByte;
+    gBufferLoc++;
   }
 
   // if we over read the clear everything
-  if (mBufferLoc >= MAX_PACKET)
+  if (gBufferLoc >= MAX_PACKET)
   {
-    mBufferLoc = 0;
+    gBufferLoc = 0;
   }
 
   count = 0;
   // Trim the garbage from the start
-  while ((SER_START != mBuffer[0]) && (count < mBufferLoc))
+  while ((SER_START != gBuffer[0]) && (count < gBufferLoc))
   {
     count++;
   }
 
   if (count > 0)
   {
-    RemoveDataForNextMessage(count, true);
+    removeDataForNextMessage(count, true);
   }
 
   // find if we are good or have garbage
-  int nextMessage = FindNextMessage();
+  int nextMessage = findNextMessage();
 
-  if (true == DoWeHaveAGoodMessage())
+  if (true == doWeHaveAGoodMessage())
   {
-    mGoodPacket = true;
+    gGoodPacket = true;
   }
   else
   {
     // Trim garbage if there is any
     if (nextMessage > 0)
     {
-      RemoveDataForNextMessage(nextMessage, true);
+      removeDataForNextMessage(nextMessage, true);
     }
   }
 }
@@ -297,30 +297,30 @@ void receiveEvent(int howMany)
 //      None
 //
 //----------------------------------------------------------------------------
-bool DoWeHaveAGoodMessage()
+bool doWeHaveAGoodMessage()
 {
   bool returnValue = false;
   uint8 theLength = MAX_RECEIVE;
 
-  if ((mBufferLoc >= theLength) && (mBufferLoc != 0) && (theLength != 0))
+  if ((gBufferLoc >= theLength) && (gBufferLoc != 0) && (theLength != 0))
   {
     //Is the preamble where it should be
-    if ((mBuffer[LOC_START] == SER_START) && (mBuffer[theLength - LOC_END] == SER_END))
+    if ((gBuffer[LOC_START] == SER_START) && (gBuffer[theLength - LOC_END] == SER_END))
     {
-      uint8 checkByte = CalcCheckByte(mBuffer, LOC_PI_STATUS, theLength - LOC_DATA_END);
+      uint8 checkByte = calcCheckByte(gBuffer, LOC_PI_STATUS, theLength - LOC_DATA_END);
 
-      if (checkByte == mBuffer[theLength - LOC_CHECK_BYTE])
+      if (checkByte == gBuffer[theLength - LOC_CHECK_BYTE])
       {
         returnValue = true;
       }
       else
       {
-        RemoveDataForNextMessage(theLength, true);
+        removeDataForNextMessage(theLength, true);
       }
     }
     else
     {
-      RemoveDataForNextMessage(theLength, true);
+      removeDataForNextMessage(theLength, true);
     }
   }
   return returnValue;
@@ -334,7 +334,7 @@ bool DoWeHaveAGoodMessage()
 //      None
 //
 //----------------------------------------------------------------------------
-uint8 CalcCheckByte(uint8* data, uint8 start, uint8 number)
+uint8 calcCheckByte(uint8* data, uint8 start, uint8 number)
 {
   uint8 checkByte = 0xFF;
 
@@ -353,21 +353,21 @@ uint8 CalcCheckByte(uint8* data, uint8 start, uint8 number)
 //      None
 //
 //----------------------------------------------------------------------------
-uint8 FindNextMessage()
+uint8 findNextMessage()
 {
   uint8 nextMessIndex = 0;
   bool found = false;
   uint8 theLength = MAX_RECEIVE;
 
   //Is the preamble where it should be
-  if ((mBuffer[LOC_START] == SER_START) && (mBufferLoc>2))
+  if ((gBuffer[LOC_START] == SER_START) && (gBufferLoc>2))
   {
     theLength = MAX_RECEIVE;
     //From the end of the message search the rest of what we have gotten
     //for another preamble.
-    for (nextMessIndex = 1; nextMessIndex < mBufferLoc; nextMessIndex++)
+    for (nextMessIndex = 1; nextMessIndex < gBufferLoc; nextMessIndex++)
     {
-      if (mBuffer[nextMessIndex] == SER_START)
+      if (gBuffer[nextMessIndex] == SER_START)
       {
         //If we found one stop
         found = true;
@@ -393,26 +393,26 @@ uint8 FindNextMessage()
 //      None
 //
 //----------------------------------------------------------------------------
-void RemoveDataForNextMessage(uint8 offset, bool isBad)
+void removeDataForNextMessage(uint8 offset, bool isBad)
 {
   int index;
 
   //Move the first 'offset' number of bytes forward.
-  for (index = 0; index < mBufferLoc - offset; index++)  // JSF162 JSF213 Exception
+  for (index = 0; index < gBufferLoc - offset; index++)  // JSF162 JSF213 Exception
   {
-    mBuffer[index] = mBuffer[offset + index];
+    gBuffer[index] = gBuffer[offset + index];
   }
 
   //if we have been asked to remove more bytes than we have set the number
   //of bytes to 0.
-  if (offset > mBufferLoc)
+  if (offset > gBufferLoc)
   {
-    mBufferLoc = 0;
+    gBufferLoc = 0;
   }
   else
   {
     //If not then reduce the number of bytes we have by the offset.
-    mBufferLoc -= offset;
+    gBufferLoc -= offset;
   }
 
   //Move the rest of the message down to right after the 'offset' bytes.
@@ -420,14 +420,14 @@ void RemoveDataForNextMessage(uint8 offset, bool isBad)
   for (; index < MAX_PACKET; index++)   // JSF200 JSF162 Exception
   {
     //If we are under the MAX packet size then move the data.
-    if ((offset + index) < (mBufferLoc))
+    if ((offset + index) < (gBufferLoc))
     {
-      mBuffer[index] = mBuffer[offset + index];
+      gBuffer[index] = gBuffer[offset + index];
     }
     else
     {
       //If we are over the MAX packet size then clear out the bytes.
-      mBuffer[index] = 0;
+      gBuffer[index] = 0;
     }
   }
 }
