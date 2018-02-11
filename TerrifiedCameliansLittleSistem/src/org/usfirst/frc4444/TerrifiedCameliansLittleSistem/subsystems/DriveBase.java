@@ -126,6 +126,24 @@ public class DriveBase extends Subsystem {
   //     none
   //--------------------------------------------------------------------  
   public void Drive(Joystick driveJoystick) {
+    double y = driveJoystick.getRawAxis(1);
+    double x = driveJoystick.getRawAxis(2);
+    
+    x = stealth_libraries.StealthMath.DeadBand(x,0.25);
+    y = stealth_libraries.StealthMath.DeadBand(y,0.25);
+    
+    
+    System.out.format("%6.2f %6.2f\n", y,x);
+  }
+
+  //--------------------------------------------------------------------
+  // Purpose:
+  //     Drive using the joystick 
+  //
+  // Notes:
+  //     none
+  //--------------------------------------------------------------------  
+  public void DriveGood(Joystick driveJoystick) {
     double timestamp = Timer.getFPGATimestamp();    
     final double left_distance = getLeftDistanceInches();
     final double right_distance = getRightDistanceInches();

@@ -49,7 +49,7 @@ public class DriveBase extends Subsystem {
   static final double kPgain = 0.03; /* percent throttle per degree of error */
   static final double kDgain = 0.0004; /* percent throttle per angular velocity dps */
   static final double kMaxCorrectionRatio = 0.20; /* cap corrective turning throttle to 30 percent of forward throttle */
-  static final double kSpeedGain = 0.05; // The ramp for the speed
+  static final double kSpeedGain = 0.07; // The ramp for the speed
   
   //----------------------------------------------------------------------------
   //  Class Attributes 
@@ -116,9 +116,10 @@ public class DriveBase extends Subsystem {
   //     none
   //--------------------------------------------------------------------  
   public void Drive(Joystick driveJoystick) {
-    double y = driveJoystick.getRawAxis(1)*-1;
-    double x = driveJoystick.getRawAxis(4)*-1;
+    double y = driveJoystick.getRawAxis(1);
+    double x = (driveJoystick.getRawAxis(2)*-1);
 
+    
     // Adjust for speed, check if the fast button is pushed
     if (driveJoystick.getRawButton(Constants.kFastButton)) {
       // Do Nothing
@@ -136,6 +137,7 @@ public class DriveBase extends Subsystem {
     {
       Drive(y, x);
     }
+    
   }
 
   //--------------------------------------------------------------------
@@ -156,18 +158,15 @@ public class DriveBase extends Subsystem {
     double turnThrottle = turn;
     
     // IF we are turning, turn off the gyro
-    if (Math.abs(turn) > 0.1) {
-      RawDrive(speed/1.3, turn/1.3);
+    if (Math.abs(turn) > 0.15) {
+      RawDrive(speed/1.1, turn/1.1);
       mTargetAngle = mCurrentAngle;
     } else {
-      if (Math.abs(speed) > 0.1) {
+      /*
+      if (Math.abs(speed) > 0.15) {
+/*
         double angleError = (mTargetAngle - mCurrentAngle);
-        /* very simple Proportional and Derivative   (PD) loop with a cap,
-         * replace with favorite close loop strategy or leverage future Talon <=> Pigeon features. */
         turnThrottle = angleError * kPgain - (currentAngularRate) * kDgain;
-        /* the max correction is the forward throttle times a scalar,
-         * This can be done a number of ways but basically only apply small turning correction when we are moving slow
-         * and larger correction the faster we move.  Otherwise you may need stiffer pgain at higher velocities. */
         double maxThrot = StealthMath.MaxCorrection(speed, kMaxCorrectionRatio);
         turnThrottle =  StealthMath.Cap(turnThrottle, maxThrot);
         
@@ -182,10 +181,60 @@ public class DriveBase extends Subsystem {
         RawDrive(0, 0);
         mTargetAngle = mCurrentAngle;
       }
+      */
+      RawDrive(speed,turnThrottle);
+      mTargetAngle = mCurrentAngle;
+
     }
   }
 
   protected void RawDrive(double speed, double turn) {
+    
+    // Ramp the speed
+    if(mActualSpeed != speed)
+    {
+      if(mActualSpeed<speed)
+      {
+        mActualSpeed = Math.min(mActualSpeed+kSpeedGain, speed);
+      }
+      else
+      {
+        mActualSpeed = Math.max(mActualSpeed-kSpeedGain, speed);
+      }
+    }
+    
+    double targetSpeedL = (mActualSpeed - turn);
+    double targetSpeedR = (mActualSpeed + turn);
+    RobotMap.leftMotor1SpeedControler.set(targetSpeedL);
+    RobotMap.rightMotor1SpeedControler.set(targetSpeedR);
+
+    RobotMap.netTable.putNumber("lMotor", RobotMap.leftMotor1SpeedControler.getMotorOutputVoltage());
+    RobotMap.netTable.putNumber("rMotor", RobotMap.rightMotor1SpeedControler.getMotorOutputVoltage());
+    RobotMap.netTable.putNumber("lEncoder", RobotMap.leftEncoder.GetInches());
+    RobotMap.netTable.putNumber("rEncoder", RobotMap.rightEncoder.GetInches());
+
+    if(mDisplay.isExpired())
+    {
+      mDisplay.reset();
+      System.out.format("%6d %6d %6d %6d\n", 
+        RobotMap.leftMotor1SpeedControler.getSelectedSensorPosition(0),
+        RobotMap.rightMotor1SpeedControler.getSelectedSensorPosition(0),
+        RobotMap.leftMotor1SpeedControler.getSelectedSensorVelocity(0),
+        RobotMap.rightMotor1SpeedControler.getSelectedSensorVelocity(0));
+    }
+    
+    if(Robot.oi.joystick1.getRawButton(5))
+    {
+      RobotMap.leftMotor1SpeedControler.setSelectedSensorPosition(0, 0, 20);
+      RobotMap.rightMotor1SpeedControler.setSelectedSensorPosition(0, 0, 20);
+    }
+    
+    Navigation.getInstance().setNewPose(
+        RobotMap.leftEncoder.GetInches(), 
+        RobotMap.rightEncoder.GetInches(),
+        mCurrentAngle);
+  }
+  protected void RawDrivex(double speed, double turn) {
     
     // Ramp the speed
     if(mActualSpeed != speed)

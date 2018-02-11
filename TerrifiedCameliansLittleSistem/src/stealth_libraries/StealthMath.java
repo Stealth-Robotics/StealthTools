@@ -50,6 +50,25 @@ public class StealthMath {
 
   // --------------------------------------------------------------------
   // Purpose:
+  // Return the value with a dead band where it is zero
+  //
+  // Notes:
+  // None.
+  // --------------------------------------------------------------------
+  static public double DeadBand(double axisVal, double limit) {
+    if (axisVal < -limit) {
+      return axisVal;
+    }
+
+    if (axisVal > limit) {
+      return axisVal;
+    }
+
+    return 0;
+  }
+
+  // --------------------------------------------------------------------
+  // Purpose:
   // Trim the top and bottom off of a number
   //
   // Notes:
