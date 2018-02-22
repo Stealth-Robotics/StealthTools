@@ -28,8 +28,8 @@
 //  Constants
 //----------------------------------------------------------------------------
 const double TIME_SLICE =    0.02;
-const double MAX_VEL    =  144.0;
-const double MAX_ACCEL  =  600.0;
+const double MAX_VEL    =  60.0;
+const double MAX_ACCEL  =  100.0;
 const double MAX_JERK   = 1000.0;
 
 //----------------------------------------------------------------------------
@@ -148,7 +148,7 @@ void createPaths(char** fields)
 {
   char filename[MAX_LINE];
 
-  sprintf(filename, "%sPath.java", fields[0]);
+  sprintf(filename, "%sPath%dInPerSec.java", fields[0], (int)MAX_VEL);
 
   FILE* javaFile = fopen(filename,"w");
 
@@ -195,36 +195,37 @@ void createPaths(char** fields)
 
   pathfinder_modify_tank(trajectory, length, leftTrajectory, rightTrajectory, wheelbase_width);
 
-  fprintf(javaFile, "//----------------------------------------------------------------------------");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//  $Workfile: %s$", filename);
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//  $Revision: X$");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//  Project:    Paths");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//                            Copyright (c) 2018");
-  fprintf(javaFile, "//                               Cedarcrest High School");
-  fprintf(javaFile, "//                            All Rights Reserved");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//  Modification History:");
-  fprintf(javaFile, "//  $Log:");
-  fprintf(javaFile, "//  $");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//----------------------------------------------------------------------------");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//");
-  fprintf(javaFile, "//----------------------------------------------------------------------------");
-  fprintf(javaFile, "//    Parameters Used");
-  fprintf(javaFile, "//----------------------------------------------------------------------------");
-  fprintf(javaFile, "//   Time Slice= %f", TIME_SLICE);
-  fprintf(javaFile, "//   Max Vel   = %f", MAX_VEL);
-  fprintf(javaFile, "//   Max Accel = %f", MAX_ACCEL);
-  fprintf(javaFile, "//   Max Jerk  = %f", MAX_JERK);
+  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//  $Workfile: %s$\n", filename);
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//  $Revision: X$\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//  Project:    Paths\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//                            Copyright (c) 2018\n");
+  fprintf(javaFile, "//                               Cedarcrest High School\n");
+  fprintf(javaFile, "//                            All Rights Reserved\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//  Modification History:\n");
+  fprintf(javaFile, "//  $Log:\n");
+  fprintf(javaFile, "//  $\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//\n");
+  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
+  fprintf(javaFile, "//    Parameters Used\n");
+  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
+  fprintf(javaFile, "//   Time Slice= %f\n", TIME_SLICE);
+  fprintf(javaFile, "//   Max Vel   = %f\n", MAX_VEL);
+  fprintf(javaFile, "//   Max Accel = %f\n", MAX_ACCEL);
+  fprintf(javaFile, "//   Max Jerk  = %f\n", MAX_JERK);
 
-  fprintf(javaFile, "package org.usfirst.frc4089.paths;\n");
-  fprintf(javaFile, "public class %sPath extends Path {\n", fields[0]);
-  fprintf(javaFile, "    public %sPath() {\n", fields[0]);
+  fprintf(javaFile, "package org.usfirst.frc4089.Stealth2018.MPPaths;\n");
+  fprintf(javaFile, "\n");
+  fprintf(javaFile, "public class %sPath%dInPerSec extends Path {\n", fields[0],(int)MAX_VEL);
+  fprintf(javaFile, "    public %sPath%dInPerSec() {\n", fields[0], (int)MAX_VEL);
   fprintf(javaFile, "       kNumPoints =%d;\n", length);
   fprintf(javaFile, "       kPoints = new double[][]{\n");
 

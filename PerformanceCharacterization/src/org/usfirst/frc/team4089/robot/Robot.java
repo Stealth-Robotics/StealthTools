@@ -29,10 +29,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-    mTestCommand = new DrivetrainCharacterizer(4,
+    mTestCommand = new DrivetrainCharacterizer(30,
         DrivetrainCharacterizer.TestMode.QUASI_STATIC,
-        0.005,
-        0.7);
+        0.001,
+        1.5);
     Scheduler.getInstance().add(mTestCommand);
 	}
 

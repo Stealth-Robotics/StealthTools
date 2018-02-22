@@ -1,15 +1,3 @@
-﻿  trajectory.c
-  spline.c
-  tank.c
-  swerve.c
-  mathutil.c
-  io.c
-  generator.c
-  encoder.c
-  distance.c
-  hermite.c
-  Generating Code...
-  JacisPathfinder.cpp
-     Creating library C:\JimsCode\c++\JacisPathfinder\Debug\JacisPathfinder.lib and object C:\JimsCode\c++\JacisPathfinder\Debug\JacisPathfinder.exp
-  JacisPathfinder.vcxproj -> C:\JimsCode\c++\JacisPathfinder\Debug\JacisPathfinder.exe
-  JacisPathfinder.vcxproj -> C:\JimsCode\c++\JacisPathfinder\Debug\JacisPathfinder.pdb (Partial PDB)
+﻿  JacisPathfinder.cpp
+  JacisPathfinder.vcxproj -> C:\JimsCode\StealthTools\JacisPathfinder\Debug\JacisPathfinder.exe
+  JacisPathfinder.vcxproj -> C:\JimsCode\StealthTools\JacisPathfinder\Debug\JacisPathfinder.pdb (Partial PDB)

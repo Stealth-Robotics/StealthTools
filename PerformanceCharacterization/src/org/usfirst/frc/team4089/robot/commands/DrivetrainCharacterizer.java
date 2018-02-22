@@ -39,10 +39,10 @@ public class DrivetrainCharacterizer extends TimedCommand {
         try {
             switch (mode) {
                 case QUASI_STATIC:
-                    fw = new FileWriter("/home/lvuser/velFile.csv", false);
+                    fw = new FileWriter("/home/lvuser/velFile3.csv", false);
                     break;
                 case STEP_VOLTAGE:
-                    fw = new FileWriter("/home/lvuser/accelFile.csv", false);
+                    fw = new FileWriter("/home/lvuser/accelFile2.csv", false);
                     speed = maxSpeed;
                     break;
             }
@@ -72,13 +72,15 @@ public class DrivetrainCharacterizer extends TimedCommand {
                     RobotMap.leftMotor1SpeedControler.getMotorOutputVoltage() + ", " +
                     RobotMap.rightMotor1SpeedControler.getMotorOutputVoltage()  + "\n"
             );
+            fw.flush();
 
             //If rampRate causes speed to exceed max speed, stop the command. Speed never exceeds maxSpeed in
             //STEP_VOLTAGE mode because rampRate is 0. Thus, no switch needed.
-            speed += rampRate;
             if(speed > maxSpeed) {
-                speed = maxSpeed;
+                System.out.println("Max speed exceeded " + timeSinceInitialized() + " seconds after initialization");
+                cancel();
             }
+            speed += rampRate;
         }
         catch(IOException e) {
             e.printStackTrace();

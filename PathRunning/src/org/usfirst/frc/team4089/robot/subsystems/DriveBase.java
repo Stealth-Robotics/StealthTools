@@ -29,10 +29,10 @@ public class DriveBase extends Subsystem {
   //----------------------------------------------------------------------------
   //  Class Constants 
   //----------------------------------------------------------------------------
-  static final double kPgain = 0.03; /* percent throttle per degree of error */
-  static final double kDgain = 0.0004; /* percent throttle per angular velocity dps */
+  static final double kPgain = 0.003; /* percent throttle per degree of error */
+  static final double kDgain = 0.0001; /* percent throttle per angular velocity dps */
   static final double kMaxCorrectionRatio = 0.20; /* cap corrective turning throttle to 30 percent of forward throttle */
-  static final double kSpeedGain = 0.05; // The ramp for the speed
+  static final double kSpeedGain = 0.03; // The ramp for the speed
   
   // The robot drivetrain's various states.
   public enum DriveControlState {
@@ -112,8 +112,8 @@ public class DriveBase extends Subsystem {
   //     none
   //--------------------------------------------------------------------  
   public void DriveTest(Joystick driveJoystick) {
-    double y = driveJoystick.getRawAxis(1);
-    double x = driveJoystick.getRawAxis(2);
+    double y = driveJoystick.getRawAxis(1)*-1;
+    double x = driveJoystick.getRawAxis(3);
     
     x = stealth_libraries.StealthMath.DeadBand(x,0.25);
     y = stealth_libraries.StealthMath.DeadBand(y,0.25);
@@ -130,8 +130,8 @@ public class DriveBase extends Subsystem {
   //     none
   //--------------------------------------------------------------------  
   public void Drive(Joystick driveJoystick) {
-    double y = driveJoystick.getRawAxis(1)*-1;
-    double x = driveJoystick.getRawAxis(0);
+    double y = driveJoystick.getRawAxis(1);
+    double x = driveJoystick.getRawAxis(2);
 
     x = stealth_libraries.StealthMath.DeadBand(x,0.25);
     y = stealth_libraries.StealthMath.DeadBand(y,0.25);
@@ -175,20 +175,14 @@ public class DriveBase extends Subsystem {
     
     // IF we are turning, turn off the gyro
     if (Math.abs(turn) > 0.2) {
-      RawDrive(speed*.7, turn*.7);
+      RawDrive(speed*.5, turn*.5);
       mTargetAngle = mCurrentAngle;
     } else {
       if (Math.abs(speed) > 0.1) {
         double angleError = (mTargetAngle - mCurrentAngle);
-        /* very simple Proportional and Derivative (PD) loop with a cap,
-         * replace with favorite close loop strategy or leverage future Talon <=> Pigeon features. */
         turnThrottle = angleError * kPgain - (currentAngularRate) * kDgain;
-        /* the max correction is the forward throttle times a scalar,
-         * This can be done a number of ways but basically only apply small turning correction when we are moving slow
-         * and larger correction the faster we move.  Otherwise you may need stiffer pgain at higher velocities. */
         double maxThrot = StealthMath.MaxCorrection(speed, kMaxCorrectionRatio);
         turnThrottle =  -1*StealthMath.Cap(turnThrottle, maxThrot);
-        
         RawDrive(speed,turnThrottle);
       }
       else
@@ -283,8 +277,8 @@ public class DriveBase extends Subsystem {
     //mActualSpeed = Math.sin(mSinCount);
     //mSinCount+=.01;
         
-    double targetSpeedL = (mActualSpeed + turn) * 1820;
-    double targetSpeedR = (mActualSpeed - turn) * 2000;
+    double targetSpeedL = (mActualSpeed + turn) * 4000;
+    double targetSpeedR = (mActualSpeed - turn) * 4000;
     RobotMap.leftMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedL);
     RobotMap.rightMotor1SpeedControler.set(ControlMode.Velocity, targetSpeedR);
 

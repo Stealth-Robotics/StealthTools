@@ -3,7 +3,7 @@ package org.usfirst.frc.team4089.robot;
 public class Constants {
 
   // Speed
-  public static final double kNormalSpeed = 0.7;
+  public static final double kNormalSpeed = 0.5;
   public static final double kSlowSpeed = 0.3;
   
   // Controls
