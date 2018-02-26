@@ -76,12 +76,10 @@ void loop()
 {
   int newAmount = analogRead(mSensorPin);
   Serial.println(newAmount);
-
-  if(newAmount<=700)
-  {
-    mShelfSettings[ 0] = (newAmount/50);
-    mShelfSettings[ 1] = (newAmount/50);
-  }
+  
+  mShelfSettings[ 0] = (newAmount/70);
+  mShelfSettings[ 1] = (newAmount/70);
+  
 
   mLineCount++;
   if(mLineCount>=MAX_LINES)
