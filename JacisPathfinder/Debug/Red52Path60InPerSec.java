@@ -1,7 +1,6 @@
-/* Red52 Feed Switch from Side start 5 cont */
 //----------------------------------------------------------------------------
 //
-//  $Workfile: Red52Path60InPerSec.java$
+//  $Workfile: Red52Path60InPerSec.java
 //
 //  $Revision: X$
 //
@@ -10,6 +9,7 @@
 //                            Copyright (c) 2018
 //                               Cedarcrest High School
 //                            All Rights Reserved
+
 //
 //  Modification History:
 //  $Log:
@@ -24,12 +24,12 @@
 //   Time Slice= 0.020000
 //   Max Vel   = 60.000000
 //   Max Accel = 100.000000
-//   Max Jerk  = 1000.000000
+//   Max Jerk  =  1000.000000
 package org.usfirst.frc4089.Stealth2018.MPPaths;
 
 public class Red52Path60InPerSec extends Path {
     public Red52Path60InPerSec() {
-       kNumPoints =139;
+       kNumPoints = 139;
        kPoints = new double[][]{
   {0.400000, 0.400000, 0.003618, 16.002508, 50.750000, 16.003392, 36.750000},
   {0.680084, 0.919915, 0.023248, 16.016109, 50.750003, 16.021790, 36.750004},

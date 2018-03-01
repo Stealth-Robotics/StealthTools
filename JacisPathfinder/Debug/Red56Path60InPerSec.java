@@ -1,7 +1,6 @@
-/* Red56 Feed cross scale from side */
 //----------------------------------------------------------------------------
 //
-//  $Workfile: Red56Path60InPerSec.java$
+//  $Workfile: Red56Path60InPerSec.java
 //
 //  $Revision: X$
 //
@@ -10,6 +9,7 @@
 //                            Copyright (c) 2018
 //                               Cedarcrest High School
 //                            All Rights Reserved
+
 //
 //  Modification History:
 //  $Log:
@@ -24,12 +24,12 @@
 //   Time Slice= 0.020000
 //   Max Vel   = 60.000000
 //   Max Accel = 100.000000
-//   Max Jerk  = 1000.000000
+//   Max Jerk  =  1000.000000
 package org.usfirst.frc4089.Stealth2018.MPPaths;
 
 public class Red56Path60InPerSec extends Path {
     public Red56Path60InPerSec() {
-       kNumPoints =516;
+       kNumPoints = 516;
        kPoints = new double[][]{
   {0.400000, 0.400000, 359.997420, 16.003030, 50.750000, 16.002399, 36.750000},
   {0.892893, 0.707107, 359.982213, 16.020888, 50.749997, 16.016541, 36.749997},

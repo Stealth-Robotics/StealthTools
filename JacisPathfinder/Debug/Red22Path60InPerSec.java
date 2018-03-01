@@ -1,7 +1,6 @@
-/* Red22 Feed Switch from Side start 2 cont */
 //----------------------------------------------------------------------------
 //
-//  $Workfile: Red22Path60InPerSec.java$
+//  $Workfile: Red22Path60InPerSec.java
 //
 //  $Revision: X$
 //
@@ -10,6 +9,7 @@
 //                            Copyright (c) 2018
 //                               Cedarcrest High School
 //                            All Rights Reserved
+
 //
 //  Modification History:
 //  $Log:
@@ -24,12 +24,12 @@
 //   Time Slice= 0.020000
 //   Max Vel   = 60.000000
 //   Max Accel = 100.000000
-//   Max Jerk  = 1000.000000
+//   Max Jerk  =  1000.000000
 package org.usfirst.frc4089.Stealth2018.MPPaths;
 
 public class Red22Path60InPerSec extends Path {
     public Red22Path60InPerSec() {
-       kNumPoints =208;
+       kNumPoints = 208;
        kPoints = new double[][]{
   {0.400000, 0.400000, 359.999483, 16.001040, 242.750000, 16.000913, 228.750000},
   {0.851745, 0.748255, 359.991012, 16.018074, 242.749999, 16.015878, 228.749999},

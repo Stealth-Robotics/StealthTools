@@ -1,7 +1,6 @@
-/* Red15 Feed scale from side aud */
 //----------------------------------------------------------------------------
 //
-//  $Workfile: Red15Path60InPerSec.java$
+//  $Workfile: Red15Path60InPerSec.java
 //
 //  $Revision: X$
 //
@@ -10,6 +9,7 @@
 //                            Copyright (c) 2018
 //                               Cedarcrest High School
 //                            All Rights Reserved
+
 //
 //  Modification History:
 //  $Log:
@@ -24,12 +24,12 @@
 //   Time Slice= 0.020000
 //   Max Vel   = 60.000000
 //   Max Accel = 100.000000
-//   Max Jerk  = 1000.000000
+//   Max Jerk  =  1000.000000
 package org.usfirst.frc4089.Stealth2018.MPPaths;
 
 public class Red15Path60InPerSec extends Path {
     public Red15Path60InPerSec() {
-       kNumPoints =301;
+       kNumPoints = 301;
        kPoints = new double[][]{
   {0.400000, 0.400000, 359.998483, 16.002556, 287.250000, 16.002185, 273.250000},
   {0.862539, 0.737461, 359.988246, 16.019807, 287.249998, 16.016934, 273.249998},

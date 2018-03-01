@@ -1,7 +1,6 @@
-/* Red41 Feed Switch from Side start 4 aud */
 //----------------------------------------------------------------------------
 //
-//  $Workfile: Red41Path60InPerSec.java$
+//  $Workfile: Red41Path60InPerSec.java
 //
 //  $Revision: X$
 //
@@ -10,6 +9,7 @@
 //                            Copyright (c) 2018
 //                               Cedarcrest High School
 //                            All Rights Reserved
+
 //
 //  Modification History:
 //  $Log:
@@ -24,12 +24,12 @@
 //   Time Slice= 0.020000
 //   Max Vel   = 60.000000
 //   Max Accel = 100.000000
-//   Max Jerk  = 1000.000000
+//   Max Jerk  =  1000.000000
 package org.usfirst.frc4089.Stealth2018.MPPaths;
 
 public class Red41Path60InPerSec extends Path {
     public Red41Path60InPerSec() {
-       kNumPoints =221;
+       kNumPoints = 221;
        kPoints = new double[][]{
   {0.400000, 0.400000, 0.000148, 16.000473, 105.500000, 16.000509, 91.500000},
   {0.770503, 0.829497, 0.004977, 16.015883, 105.500001, 16.017099, 91.500001},

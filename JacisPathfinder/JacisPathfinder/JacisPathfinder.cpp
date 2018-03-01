@@ -18,6 +18,13 @@
 #include "pathfinder.h"
 #include <stdio.h>
 #include <string.h>
+#include <sstream>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 //----------------------------------------------------------------------------
 //  Defines
@@ -35,61 +42,9 @@ const double MAX_JERK   = 1000.0;
 //----------------------------------------------------------------------------
 //  Local Functions
 //----------------------------------------------------------------------------
-void createPaths(char** fields);
+void createPaths(vector<string> fields);
 
-//----------------------------------------------------------------------------
-//  Purpose:
-//      Split the string into seperate chunks
-//
-//  Notes:
-//      None
-//
-//----------------------------------------------------------------------------
-char** str_split(char* a_str, const char a_delim)
-{
-  char** result = 0;
-  size_t count = 0;
-  char* tmp = a_str;
-  char* last_comma = 0;
-  char delim[2];
-  delim[0] = a_delim;
-  delim[1] = 0;
-
-  /* Count how many elements will be extracted. */
-  while (*tmp)
-  {
-    if (a_delim == *tmp)
-    {
-      count++;
-      last_comma = tmp;
-    }
-    tmp++;
-  }
-
-  /* Add space for trailing token. */
-  count += last_comma < (a_str + strlen(a_str) - 1);
-
-  /* Add space for terminating null string so caller
-  knows where the list of returned strings ends. */
-  count++;
-
-  result = (char**)malloc(sizeof(char*) * count);
-
-  if (result)
-  {
-    size_t idx = 0;
-    char* token = strtok(a_str, delim);
-
-    while (token)
-    {
-      *(result + idx++) = _strdup(token);
-      token = strtok(0, delim);
-    }
-    *(result + idx) = 0;
-  }
-
-  return result;
-}
+std::ifstream csvFile("paths.csv");
 
 //----------------------------------------------------------------------------
 //  Purpose:
@@ -101,37 +56,34 @@ char** str_split(char* a_str, const char a_delim)
 //----------------------------------------------------------------------------
 int main()
 {
-  // Get the file
-  FILE* csvFile = fopen("paths.csv","r");
-  char line[MAX_LINE];
-
-  if (NULL == csvFile)
+  std::string line;
+  std::getline(csvFile, line);
+  while (std::getline(csvFile, line))
   {
-    printf("Can't find the paths.csv file!");
-    fclose(csvFile);
-    return -1;
-  }
+    cout << line << endl;
+    std::istringstream iss(line);
+    std::string delimiter = ",";
+    size_t pos = 0;
+    vector<string> lineParts;
 
-  fgets(line, MAX_LINE, csvFile);
-
-  while (!feof(csvFile))
-  {
-    fgets(line, MAX_LINE, csvFile);
-
-    if (strlen(line) > 0)
+    while ((pos = line.find(delimiter)) != std::string::npos) 
     {
-      printf("%s", line);
-
-      char** tokens = str_split(line, ',');
-
-      if (tokens)
-      {
-        createPaths(tokens);
-        free(tokens);
-      }
+      std::string token = line.substr(0, pos);
+      lineParts.push_back(token);
+      line.erase(0, pos + delimiter.length());
     }
-  }
+    lineParts.push_back(line);
 
+    /*
+    for (int i = 0; i < (int)lineParts.size(); i++)
+    {
+      std::cout << lineParts[i] << "~";
+    }
+    */
+
+    createPaths(lineParts);
+    //std::cout << line << std::endl;
+  }
   return 0;
 }
 
@@ -144,32 +96,23 @@ int main()
 //      None
 //
 //----------------------------------------------------------------------------
-void createPaths(char** fields)
+void createPaths(vector<string> fields)
 {
-  char filename[MAX_LINE];
+  string classname = fields[0] + "Path" + to_string((int)MAX_VEL) + "InPerSec";
+  string filename = classname + ".java";
 
-  sprintf(filename, "%sPath%dInPerSec.java", fields[0], (int)MAX_VEL);
+  ofstream outputFile;
+  outputFile.open(filename,ofstream::trunc);
 
-  FILE* javaFile = fopen(filename,"w");
-
-  if (NULL == javaFile)
-  {
-    printf("Can't open:%s\n", filename);
-    return;
-  }
-
-  fprintf(javaFile, "/* %s %s */\n", fields[0], fields[1]);
-
-
-  int pointLength = atoi(fields[2]);
+  int pointLength =  stoi(fields[2]);
 
   Waypoint *points = (Waypoint*)malloc(sizeof(Waypoint) * pointLength);
 
   for (int i = 0; i < pointLength; i++)
   {
-    points[i].x = atof(fields[3 + (i * 3)]);
-    points[i].y = atof(fields[3 + (i * 3)+1]);
-    points[i].angle = d2r(atof(fields[3 + (i * 3)+2]));
+    points[i].x = stof(fields[3 + (i * 3)]);
+    points[i].y = stof(fields[3 + (i * 3)+1]);
+    points[i].angle = d2r(stof(fields[3 + (i * 3)+2]));
   }
 
   TrajectoryCandidate candidate;
@@ -195,64 +138,62 @@ void createPaths(char** fields)
 
   pathfinder_modify_tank(trajectory, length, leftTrajectory, rightTrajectory, wheelbase_width);
 
-  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//  $Workfile: %s$\n", filename);
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//  $Revision: X$\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//  Project:    Paths\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//                            Copyright (c) 2018\n");
-  fprintf(javaFile, "//                               Cedarcrest High School\n");
-  fprintf(javaFile, "//                            All Rights Reserved\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//  Modification History:\n");
-  fprintf(javaFile, "//  $Log:\n");
-  fprintf(javaFile, "//  $\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//\n");
-  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
-  fprintf(javaFile, "//    Parameters Used\n");
-  fprintf(javaFile, "//----------------------------------------------------------------------------\n");
-  fprintf(javaFile, "//   Time Slice= %f\n", TIME_SLICE);
-  fprintf(javaFile, "//   Max Vel   = %f\n", MAX_VEL);
-  fprintf(javaFile, "//   Max Accel = %f\n", MAX_ACCEL);
-  fprintf(javaFile, "//   Max Jerk  = %f\n", MAX_JERK);
+  outputFile << "//----------------------------------------------------------------------------" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//  $Workfile: " + filename << endl;
+  outputFile << "//" << endl;
+  outputFile << "//  $Revision: X$" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//  Project:    Paths" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//                            Copyright (c) 2018" << endl;
+  outputFile << "//                               Cedarcrest High School" << endl;
+  outputFile << "//                            All Rights Reserved\n" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//  Modification History:" << endl;
+  outputFile << "//  $Log:" << endl;
+  outputFile << "//  $" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//----------------------------------------------------------------------------" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//" << endl;
+  outputFile << "//----------------------------------------------------------------------------" << endl;
+  outputFile << "//    Parameters Used" << endl;
+  outputFile << "//----------------------------------------------------------------------------" << endl;
+  outputFile << "//   Time Slice= " << to_string(TIME_SLICE) << endl;
+  outputFile << "//   Max Vel   = " << to_string(MAX_VEL) << endl;
+  outputFile << "//   Max Accel = " << to_string(MAX_ACCEL) << endl;
+  outputFile << "//   Max Jerk  =  " << to_string(MAX_JERK) << endl;
 
-  fprintf(javaFile, "package org.usfirst.frc4089.Stealth2018.MPPaths;\n");
-  fprintf(javaFile, "\n");
-  fprintf(javaFile, "public class %sPath%dInPerSec extends Path {\n", fields[0],(int)MAX_VEL);
-  fprintf(javaFile, "    public %sPath%dInPerSec() {\n", fields[0], (int)MAX_VEL);
-  fprintf(javaFile, "       kNumPoints =%d;\n", length);
-  fprintf(javaFile, "       kPoints = new double[][]{\n");
+  outputFile << "package org.usfirst.frc4089.Stealth2018.MPPaths;" << endl;
+  outputFile << endl;
+  outputFile << "public class " << classname << " extends Path {" << endl;
+  outputFile << "    public " << classname << "() {"<<endl;
+  outputFile << "       kNumPoints = " << to_string(length) << ";" << endl;
+  outputFile << "       kPoints = new double[][]{" << endl;
 
   for (int i = 0; i < length; i++)
   {
-    fprintf(javaFile, "  {%f, %f, %f, %f, %f, %f, %f}",
-      leftTrajectory[i].velocity,
-      rightTrajectory[i].velocity,
-      r2d(leftTrajectory[i].heading),
-      leftTrajectory[i].x,
-      leftTrajectory[i].y,
-      rightTrajectory[i].x,
-      rightTrajectory[i].y);
+    outputFile << "  {" <<
+      to_string(leftTrajectory[i].velocity) << ", " <<
+      to_string(rightTrajectory[i].velocity) << ", "  <<
+      to_string(r2d(leftTrajectory[i].heading)) << ", " <<
+      to_string(leftTrajectory[i].x) << ", " <<
+      to_string(leftTrajectory[i].y) << ", " <<
+      to_string(rightTrajectory[i].x) << ", " <<
+      to_string(rightTrajectory[i].y) << "}";
 
     if (i + 1 == length)
     {
-      fprintf(javaFile, "};\n");
+      outputFile << "};" << endl;
     }
     else
     {
-      fprintf(javaFile, ",\n");
+      outputFile << "," << endl;
     }
   }
-  fprintf(javaFile, "}}\n");
+  outputFile << "}}" << endl;
 
-  fclose(javaFile);
+  outputFile.close();
   free(trajectory);
-  free(points);
-  return;
 }

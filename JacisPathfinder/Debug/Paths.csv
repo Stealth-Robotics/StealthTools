@@ -2,8 +2,8 @@
 Bad,Move ten feet,2,0,0,0,120,0,0,,,,,,,,,
 Move10,Move ten feet,2,0,0,0,120,0,0,,,,,,,,,
 Move8,Move eight feet,2,0,0,0,96,0,0,,,,,,,,,
-Red11,Feed Switch from Side start 1 aud,4,16,280.25,0,80,234,25,118,234,0,,,,,,
-Red12,Feed Switch from Front Start 1 aud,3,16,280.25,0,168,210.75,75,168,222.75,90,,,,,,
+Red11,Feed Switch from Front Start 1 aud,4,16,280.25,0,80,290.25,75,120,290.25,-30,140,255,-110,,,
+Red12,Feed Switch from Side start 1 aud,3,16,280.25,0,80,234,25,118,234,0,,,,,,
 Red13,Feed SW from Back start 1 aud,5,16,280.25,0,140,210.75,-25,208,210.75,25,208,222.75,125,196,222.75,180
 Red14,Feed Scale from front aud,4,16,280.25,0,140,210.75,-25,324,240.43,25,324,252.43,90,,,
 Red15,Feed scale from side aud,5,16,280.25,0,140,210.75,-25,288,210.75,25,288,204,45,300,204,0

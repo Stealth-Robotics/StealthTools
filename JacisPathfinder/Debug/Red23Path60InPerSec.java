@@ -1,7 +1,6 @@
-/* Red23 Feed Switch from Front Start 4 aud */
 //----------------------------------------------------------------------------
 //
-//  $Workfile: Red23Path60InPerSec.java$
+//  $Workfile: Red23Path60InPerSec.java
 //
 //  $Revision: X$
 //
@@ -10,6 +9,7 @@
 //                            Copyright (c) 2018
 //                               Cedarcrest High School
 //                            All Rights Reserved
+
 //
 //  Modification History:
 //  $Log:
@@ -24,12 +24,12 @@
 //   Time Slice= 0.020000
 //   Max Vel   = 60.000000
 //   Max Accel = 100.000000
-//   Max Jerk  = 1000.000000
+//   Max Jerk  =  1000.000000
 package org.usfirst.frc4089.Stealth2018.MPPaths;
 
 public class Red23Path60InPerSec extends Path {
     public Red23Path60InPerSec() {
-       kNumPoints =178;
+       kNumPoints = 178;
        kPoints = new double[][]{
   {0.400000, 0.400000, 359.999627, 16.002755, 242.750000, 16.002664, 228.750000},
   {0.813452, 0.786548, 359.997425, 16.019024, 242.750000, 16.018395, 228.750000},
