@@ -169,6 +169,7 @@ void createPaths(vector<string> fields)
   outputFile << endl;
   outputFile << "public class " << classname << " extends Path {" << endl;
   outputFile << "    public " << classname << "() {"<<endl;
+  outputFile << "       kSpeed = " << to_string(MAX_VEL/10.0) << ";" << endl;
   outputFile << "       kNumPoints = " << to_string(length) << ";" << endl;
   outputFile << "       kPoints = new double[][]{" << endl;
 
